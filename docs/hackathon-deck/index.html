@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>axiom Hackathon Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="deck">
+      <section class="slide">
+        <div class="slide-inner two-col">
+          <div class="hero-copy">
+            <div>
+              <div class="eyebrow"><strong>Software Track</strong> Hackathon Shortlist Deck</div>
+              <h1 class="title">axiom<span>.</span></h1>
+              <p class="lead">
+                Build, save, and monitor AI agents from one local-first workspace.
+              </p>
+              <p class="subcopy">
+                axiom helps product and engineering teams move from AI experiments to reusable workflows. Start with
+                prebuilt agents, generate new ones from plain English, and inspect every run in a local dashboard.
+              </p>
+              <p class="team-line">
+                <strong>Team:</strong> Cache Money
+                <span>Members: Atharva Singh, Sanidhya Shishodia, Rudra Pratap Singh</span>
+              </p>
+              <div class="meta-row">
+                <div class="pill">Project title: <span class="accent">axiom</span></div>
+                <div class="pill">Team: Cache Money</div>
+                <div class="pill">Submission: 7-slide product deck</div>
+              </div>
+              <div class="hero-band">
+                <div class="band-card">
+                  <strong>Start fast</strong>
+                  <span>Run prebuilt agents for research, product, engineering, and support tasks.</span>
+                </div>
+                <div class="band-card">
+                  <strong>Create faster</strong>
+                  <span>Turn one natural-language description into a reusable custom agent definition.</span>
+                </div>
+                <div class="band-card">
+                  <strong>Operate clearly</strong>
+                  <span>Track outputs, tool calls, tokens, loops, and cost inside the project.</span>
+                </div>
+              </div>
+            </div>
+            <div class="footer">
+              <span>One product surface for building and operating agents</span>
+              <span class="slide-num">01</span>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="stack">
+              <div class="metric-strip">
+                <div class="panel metric">
+                  <div class="metric-label">Built-in agents</div>
+                  <div class="metric-value">20</div>
+                  <div class="metric-note">ready-to-run workflows</div>
+                </div>
+                <div class="panel metric">
+                  <div class="metric-label">Core packages</div>
+                  <div class="metric-value">3</div>
+                  <div class="metric-note">agents, cli, dashboard</div>
+                </div>
+                <div class="panel metric">
+                  <div class="metric-label">Local surfaces</div>
+                  <div class="metric-value">CLI + UI</div>
+                  <div class="metric-note">run, build, inspect</div>
+                </div>
+              </div>
+              <div class="panel panel-strong mock-window">
+                <div class="window-bar">
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+                  <div class="window-title">axiom dashboard</div>
+                </div>
+                <div class="dashboard-body">
+                  <div class="dashboard-sidebar">
+                    <div class="nav-item active">Agent Catalog</div>
+                    <div class="nav-item">Custom Builder</div>
+                    <div class="nav-item">Run History</div>
+                    <div class="nav-item">Run Detail</div>
+                    <div class="nav-item">Project Storage</div>
+                  </div>
+                  <div class="dashboard-main">
+                    <div class="mini-grid">
+                      <div class="mini-chip">
+                        <strong>Research</strong>
+                        <span>built-in</span>
+                      </div>
+                      <div class="mini-chip">
+                        <strong>Engineering</strong>
+                        <span>custom + saved</span>
+                      </div>
+                      <div class="mini-chip">
+                        <strong>Observability</strong>
+                        <span>cost, loops, tools</span>
+                      </div>
+                    </div>
+                    <div class="tiny-grid">
+                      <div class="tiny-card">
+                        <h4>Run selected agent</h4>
+                        <p>
+                          Choose a built-in workflow or a saved custom agent, give it one prompt, and let the run
+                          persist under the project automatically.
+                        </p>
+                      </div>
+                      <div class="tiny-card">
+                        <h4>Run detail</h4>
+                        <p>Inspect inputs, outputs, tool calls, tokens, cost, and auth mode after every execution.</p>
+                      </div>
+                    </div>
+                    <div class="tiny-card">
+                      <h4>Why this matters</h4>
+                      <p>
+                        axiom reduces the gap between "I have an AI idea" and "this is actually usable in a codebase."
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="code-card">
+              <pre>import { ResearchAgent, createAgent } from "@axiom/agents";
+
+const scout = await ResearchAgent.run("Map the AI agent landscape");
+const custom = await createAgent("Summarize user interviews into themes");
+const result = await custom.run("raw interview notes");</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="section-header">
+            <div class="section-kicker">Problem Statement</div>
+            <h2 class="section-title">Shipping AI agents is still too manual, fragmented, and hard to trust.</h2>
+            <p class="section-summary">
+              Teams can get a useful model output quickly. What they still do not get is a reusable product workflow
+              with tooling, persistence, discoverability, and visibility into what actually happened.
+            </p>
+          </div>
+          <div class="problem-grid-wide">
+            <div class="pain-card">
+              <div class="index">01</div>
+              <h4>Fragmented setup</h4>
+              <p>Teams juggle model SDKs, auth, tools, and glue code before they can ship anything usable.</p>
+            </div>
+            <div class="pain-card">
+              <div class="index">02</div>
+              <h4>One-off prompts</h4>
+              <p>Useful AI behavior often stays trapped in chat history instead of becoming reusable product logic.</p>
+            </div>
+            <div class="pain-card">
+              <div class="index">03</div>
+              <h4>No observability</h4>
+              <p>Without run history, tool traces, and cost visibility, teams cannot reliably debug or trust agent output.</p>
+            </div>
+            <div class="pain-card">
+              <div class="index">04</div>
+              <h4>Slow iteration</h4>
+              <p>Every new agent idea means rebuilding packaging, storage, and operating surfaces from scratch.</p>
+            </div>
+          </div>
+          <div class="problem-strip">
+            <div class="band-card">
+              <strong>Why teams stall</strong>
+              <span>Good AI demos do not become repeatable workflows on their own.</span>
+            </div>
+            <div class="band-card">
+              <strong>Why trust breaks</strong>
+              <span>If the team cannot inspect runs, agent behavior feels unpredictable and risky.</span>
+            </div>
+            <div class="band-card">
+              <strong>Why this matters</strong>
+              <span>The blocker is operationalizing agents inside a product, not simply accessing a model.</span>
+            </div>
+          </div>
+          <div class="footer">
+            <span>The bottleneck is operationalizing agents, not accessing models</span>
+            <span class="slide-num">02</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="section-header">
+            <div class="section-kicker">Proposed Solution</div>
+            <h2 class="section-title">axiom gives teams one place to discover, create, run, and inspect agents.</h2>
+            <p class="section-summary">
+              Instead of stitching together prompts, SDK code, and internal tools, teams get a single local-first
+              product with an agent library, a custom builder, and built-in observability.
+            </p>
+          </div>
+          <div class="surface-grid spaced">
+            <div class="surface-card">
+              <div class="icon">A1</div>
+              <h4>Ready-made agent library</h4>
+              <p>Use built-in agents for research, product, engineering, business, support, and operations work.</p>
+              <div class="surface-list">
+                <div>20 built-in agents</div>
+                <div>Single-call `.run()` API</div>
+                <div>Token-first local setup</div>
+              </div>
+            </div>
+            <div class="surface-card">
+              <div class="icon">B2</div>
+              <h4>Description-first builder</h4>
+              <p>Generate reusable custom agents from plain English instead of manually writing prompt and tool logic.</p>
+              <div class="surface-list">
+                <div>Plain-English generation</div>
+                <div>Structured-spec support</div>
+                <div>Saved definitions in-project</div>
+              </div>
+            </div>
+            <div class="surface-card">
+              <div class="icon">C3</div>
+              <h4>Local dashboard and run history</h4>
+              <p>Inspect inputs, outputs, tools, tokens, cost, loops, and auth mode without needing hosted infrastructure.</p>
+              <div class="surface-list">
+                <div>Catalog + run actions</div>
+                <div>Run history + filters</div>
+                <div>Project-level persistence</div>
+              </div>
+            </div>
+          </div>
+          <div class="big-statement spaced">
+            <span class="accent">Core value:</span> axiom turns AI agents from isolated experiments into reusable,
+            monitorable product workflows.
+          </div>
+          <div class="workflow-strip">
+            <div class="band-card">
+              <strong>1. Pick or create</strong>
+              <span>Select a built-in agent or generate one from a plain-English description.</span>
+            </div>
+            <div class="band-card">
+              <strong>2. Run locally</strong>
+              <span>Execute through the CLI, code, or dashboard with project-level persistence.</span>
+            </div>
+            <div class="band-card">
+              <strong>3. Save and reuse</strong>
+              <span>Store custom agents inside the workspace instead of losing them in chat history.</span>
+            </div>
+            <div class="band-card">
+              <strong>4. Inspect the result</strong>
+              <span>Review output, tools, tokens, loops, and cost in one place.</span>
+            </div>
+          </div>
+          <div class="footer">
+            <span>Library + Builder + Dashboard = one complete product workflow</span>
+            <span class="slide-num">03</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="section-header">
+            <div class="section-kicker">Feasibility</div>
+            <h2 class="section-title">The core product loop already works end to end in the current repo.</h2>
+            <p class="section-summary">
+              The rebrand is new, but the implementation is already real: package structure, custom-agent generation,
+              run persistence, dashboard views, and CLI workflows are working today.
+            </p>
+          </div>
+          <div class="proof-layout spaced">
+            <div>
+              <div class="proof-grid">
+                <div class="proof-card">
+                  <strong>3</strong>
+                  <span>core packages</span>
+                  <p>Agents, CLI, and dashboard already separated in the monorepo.</p>
+                </div>
+                <div class="proof-card">
+                  <strong>20</strong>
+                  <span>built-in agents</span>
+                  <p>Importable agent workflows spanning multiple business and developer use cases.</p>
+                </div>
+                <div class="proof-card">
+                  <strong>6</strong>
+                  <span>CLI commands</span>
+                  <p>`list`, `agents`, `try`, `create`, `dashboard`, and `init` already implemented.</p>
+                </div>
+                <div class="proof-card">
+                  <strong>.agentos</strong>
+                  <span>project storage</span>
+                  <p>Custom agent definitions and run records persist directly inside the user workspace.</p>
+                </div>
+                <div class="proof-card">
+                  <strong>Claude SDK</strong>
+                  <span>runtime path</span>
+                  <p>Token-first auth and real runtime execution already wired into the product.</p>
+                </div>
+                <div class="proof-card">
+                  <strong>Dashboard</strong>
+                  <span>observability</span>
+                  <p>Catalog view, filters, run history, run detail, and run actions are already live.</p>
+                </div>
+              </div>
+            </div>
+            <div class="proof-highlight">
+              <div class="proof-banner">
+                <strong>Current product loop</strong>
+                <p>
+                  A user can already discover an agent, run it, generate a custom one, save it into the project, and
+                  inspect the execution locally.
+                </p>
+              </div>
+              <div class="panel repo-block">
+                <pre>monorepo/
+  packages/
+    agents/
+    cli/
+    dashboard/
+
+cli surface:
+  axiom list
+  axiom agents
+  axiom try
+  axiom create
+  axiom dashboard
+  axiom init</pre>
+              </div>
+              <div class="small-note">
+                Rebrand note: current codebase package names still reflect the previous name; deck branding uses
+                <strong>axiom</strong> for the incoming product identity.
+              </div>
+            </div>
+          </div>
+          <div class="footer">
+            <span>Feasibility is backed by a working product loop, not a concept mock</span>
+            <span class="slide-num">04</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner">
+          <div class="section-header">
+            <div class="section-kicker">Tech Stack</div>
+            <h2 class="section-title">A practical stack for fast iteration now and a clear path to scale later.</h2>
+            <p class="section-summary">
+              The stack stays intentionally thin: a product layer on top, reliable agent execution underneath, and simple
+              local persistence at the base.
+            </p>
+          </div>
+          <div class="stack-layout spaced">
+            <div class="stack-column">
+              <div class="stack-card">
+                <h4>Developer surface</h4>
+                <p>TypeScript package library, interactive CLI, and local dashboard for discovery, execution, and inspection.</p>
+                <div class="tag-row">
+                  <div class="tag">TypeScript</div>
+                  <div class="tag">Node.js</div>
+                  <div class="tag">pnpm</div>
+                  <div class="tag">Turbo</div>
+                </div>
+              </div>
+              <div class="stack-card">
+                <h4>CLI and UX layer</h4>
+                <p>Command-driven interface for trying built-in agents, creating custom ones, and bootstrapping new projects.</p>
+                <div class="tag-row">
+                  <div class="tag">Commander</div>
+                  <div class="tag">Inquirer</div>
+                  <div class="tag">Ora</div>
+                  <div class="tag">Chalk</div>
+                </div>
+              </div>
+              <div class="stack-card">
+                <h4>Quality and maintainability</h4>
+                <p>Workspace builds and tests already run through a predictable monorepo pipeline.</p>
+                <div class="tag-row">
+                  <div class="tag">Jest</div>
+                  <div class="tag">ts-jest</div>
+                  <div class="tag">Prettier</div>
+                </div>
+              </div>
+            </div>
+            <div class="stack-column">
+              <div class="stack-card">
+                <h4>Agent runtime</h4>
+                <p>Built around the Anthropic Claude Agent SDK with token-first auth and configurable model, loops, spend limits, and streaming.</p>
+                <div class="tag-row">
+                  <div class="tag">@anthropic-ai/claude-agent-sdk</div>
+                  <div class="tag">OAuth token flow</div>
+                  <div class="tag">API key fallback</div>
+                </div>
+              </div>
+              <div class="stack-card">
+                <h4>Tools and execution context</h4>
+                <p>Built-in web search, web scraping, file access, and runtime metadata capture for every agent run.</p>
+                <div class="tag-row">
+                  <div class="tag">axios</div>
+                  <div class="tag">cheerio</div>
+                  <div class="tag">zod</div>
+                  <div class="tag">progress hooks</div>
+                </div>
+              </div>
+              <div class="stack-card">
+                <h4>Persistence and dashboard</h4>
+                <p>Project-level JSON storage under the workspace, plus a lightweight local HTTP dashboard for visibility.</p>
+                <div class="tag-row">
+                  <div class="tag">.agentos/agents</div>
+                  <div class="tag">.agentos/runs</div>
+                  <div class="tag">local HTTP server</div>
+                  <div class="tag">browser UI</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="footer">
+            <span>Track confirmation: Software</span>
+            <span class="slide-num">05</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner compare-layout">
+          <div class="section-copy">
+            <div>
+              <div class="section-kicker">Innovation</div>
+              <h2 class="section-title">axiom closes the gap between raw model access and a usable agent product.</h2>
+              <p class="section-summary">
+                The innovation is in packaging. axiom combines ready-made agents, a plain-English builder, and local
+                observability into one workflow that is easier to adopt than raw SDKs and more reusable than chat tools.
+              </p>
+              <div class="surface-list spaced-tight">
+                <div>Prebuilt agents plus custom generation in one product</div>
+                <div>Local-first by default, no hosted dependency required</div>
+                <div>Run observability built into the developer workflow</div>
+                <div>Direct path to future hosted collaboration and billing</div>
+              </div>
+            </div>
+            <div class="footer">
+              <span>Innovation = packaging + usability + observability</span>
+              <span class="slide-num">06</span>
+            </div>
+          </div>
+          <div class="compare-grid">
+            <div class="compare-card header">Capability</div>
+            <div class="compare-card header">axiom</div>
+            <div class="compare-card header">Raw SDKs</div>
+            <div class="compare-card header">Agent frameworks</div>
+
+            <div class="compare-card rowhead">Ready-to-run agent library</div>
+            <div class="compare-card yes">Built in</div>
+            <div class="compare-card no">Manual setup</div>
+            <div class="compare-card partial">Possible, but user-built</div>
+
+            <div class="compare-card rowhead">Plain-English custom builder</div>
+            <div class="compare-card yes">Native product surface</div>
+            <div class="compare-card no">Not provided</div>
+            <div class="compare-card partial">Requires more engineering</div>
+
+            <div class="compare-card rowhead">Local run observability</div>
+            <div class="compare-card yes">Included</div>
+            <div class="compare-card no">DIY</div>
+            <div class="compare-card partial">Varies by setup</div>
+
+            <div class="compare-card rowhead">Fast developer adoption</div>
+            <div class="compare-card yes">Single workflow</div>
+            <div class="compare-card no">Too low level</div>
+            <div class="compare-card partial">Powerful, but heavier</div>
+
+            <div class="compare-card rowhead">Path to hosted business model</div>
+            <div class="compare-card yes">Proxy-ready</div>
+            <div class="compare-card no">No product layer</div>
+            <div class="compare-card partial">Infrastructure-oriented</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide">
+        <div class="slide-inner impact-layout">
+          <div class="impact-column">
+            <div class="section-kicker">Impact and Future Scope</div>
+            <h2 class="section-title">Immediate value for teams today, with a credible path to a bigger platform.</h2>
+            <div class="impact-card">
+              <h4>Expected impact</h4>
+              <p>
+                axiom lowers the time and effort needed to turn AI ideas into repeatable workflows. Teams can start
+                from working agents instead of rebuilding prompts and tooling every time.
+              </p>
+            </div>
+            <div class="impact-card">
+              <h4>Why this matters in a hackathon</h4>
+              <p>
+                It solves a real product problem, already has a working implementation, and can grow naturally into a
+                larger collaboration and infrastructure layer.
+              </p>
+            </div>
+          </div>
+          <div class="impact-column">
+            <div class="big-statement">
+              axiom can become the operating layer between raw model access and real product workflows.
+            </div>
+            <div class="impact-card">
+              <h4>Future scope</h4>
+              <div class="scope-list">
+                <div>Hosted traces and dashboards</div>
+                <div>Team sharing and multi-user collaboration</div>
+                <div>Typed outputs for high-value agent workflows</div>
+                <div>Proxy billing, spend controls, and caching</div>
+                <div>Versioned custom agents and marketplace distribution</div>
+              </div>
+            </div>
+            <div class="impact-card">
+              <h4>Closing thesis</h4>
+              <p>
+                The product is useful now, believable now, and expandable later. That combination is what makes axiom a
+                strong hackathon entry.
+              </p>
+            </div>
+          </div>
+          <div class="footer span-all">
+            <span>axiom: from one-off prompts to repeatable agent products</span>
+            <span class="slide-num">07</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
