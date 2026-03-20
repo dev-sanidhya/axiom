@@ -5,19 +5,18 @@ import inquirer from "inquirer";
 
 export async function initProject(name?: string): Promise<void> {
   if (!name) {
-    const { projectName } = await inquirer.prompt([
+    const answer = await inquirer.prompt([
       {
         type: "input",
         name: "projectName",
         message: "Project name:",
-        default: "my-agent-project",
+        default: "my-agentos-project",
       },
     ]);
-    name = projectName;
+    name = answer.projectName;
   }
 
   const projectDir = path.resolve(name!);
-
   if (fs.existsSync(projectDir)) {
     console.log(chalk.red(`  Directory ${name} already exists.`));
     return;
@@ -27,17 +26,20 @@ export async function initProject(name?: string): Promise<void> {
   console.log(chalk.cyan(`  Creating ${name}...`));
 
   fs.mkdirSync(projectDir, { recursive: true });
+  fs.mkdirSync(path.join(projectDir, ".agentos", "agents"), { recursive: true });
+  fs.mkdirSync(path.join(projectDir, ".agentos", "runs"), { recursive: true });
 
-  // package.json
   const pkg = {
     name,
     version: "0.1.0",
     private: true,
     scripts: {
       start: "ts-node index.ts",
+      dashboard: "agentos dashboard",
     },
     dependencies: {
       "@agentos/agents": "^0.1.0",
+      "dotenv": "^16.6.1",
     },
     devDependencies: {
       "@types/node": "^20.11.0",
@@ -51,87 +53,66 @@ export async function initProject(name?: string): Promise<void> {
     JSON.stringify(pkg, null, 2)
   );
 
-  // tsconfig.json
-  const tsconfig = {
-    compilerOptions: {
-      target: "ES2022",
-      module: "commonjs",
-      esModuleInterop: true,
-      strict: true,
-      skipLibCheck: true,
-    },
-  };
-
   fs.writeFileSync(
     path.join(projectDir, "tsconfig.json"),
-    JSON.stringify(tsconfig, null, 2)
+    JSON.stringify(
+      {
+        compilerOptions: {
+          target: "ES2022",
+          module: "commonjs",
+          esModuleInterop: true,
+          strict: true,
+          skipLibCheck: true,
+        },
+      },
+      null,
+      2
+    )
   );
 
-  // .env
   fs.writeFileSync(
     path.join(projectDir, ".env"),
     [
-      "# Authentication (pick one)",
-      "",
-      "# Option 1: Claude Max/Pro plan (recommended — no API billing)",
+      "# Primary auth path: Claude Pro/Max token",
       "# Run: claude setup-token",
-      "# CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-...",
+      "CLAUDE_CODE_OAUTH_TOKEN=",
       "",
-      "# Option 2: Anthropic API key",
-      "# ANTHROPIC_API_KEY=sk-ant-...",
-      "",
-      "# Optional: For web search (Brave Search API)",
-      "# BRAVE_SEARCH_API_KEY=",
+      "# Fallback: Anthropic API key",
+      "# ANTHROPIC_API_KEY=",
       "",
     ].join("\n")
   );
 
-  // .gitignore
   fs.writeFileSync(
     path.join(projectDir, ".gitignore"),
-    "node_modules/\ndist/\n.env\n"
+    ["node_modules/", "dist/", ".env", ".agentos/runs/"].join("\n")
   );
 
-  // index.ts - example usage
-  const example = `import {
+  const example = `import "dotenv/config";
+import {
   ResearchAgent,
-  CodeReviewAgent,
-  ContentWriter,
-  EmailDrafter,
-  SEOAuditor,
-  BugTriager,
+  PRDWriter,
+  createAgent,
+  loadAgent,
   configure,
-} from '@agentos/agents';
-import 'dotenv/config';
+} from "@agentos/agents";
 
-// Authentication is auto-detected from environment variables:
-// - CLAUDE_CODE_OAUTH_TOKEN (Max/Pro plan — recommended)
-// - ANTHROPIC_API_KEY (standard API key)
-//
-// Or configure explicitly:
-// configure({ oauthToken: process.env.CLAUDE_CODE_OAUTH_TOKEN });
+configure({
+  oauthToken: process.env.CLAUDE_CODE_OAUTH_TOKEN,
+});
 
 async function main() {
-  // Example 1: Research a topic
-  console.log('Researching...');
-  const research = await ResearchAgent.run('Latest trends in AI agents 2026');
+  const research = await ResearchAgent.run("Compare the top AI agent frameworks for shipping product features.");
   console.log(research.output);
 
-  // Example 2: Draft an email
-  // const email = await EmailDrafter.run('Follow-up email to a potential investor after a demo call');
-  // console.log(email.output);
+  const prd = await PRDWriter.run("Create a PRD for a local dashboard that shows run history and saved agents.");
+  console.log(prd.output);
 
-  // Example 3: Audit SEO
-  // const seo = await SEOAuditor.run('https://example.com');
-  // console.log(seo.output);
+  const custom =
+    (await loadAgent("my-agent")) ??
+    (await createAgent("An agent that summarizes customer interview notes into themes and action items"));
 
-  // Example 4: Review code
-  // const review = await CodeReviewAgent.run('./index.ts');
-  // console.log(review.output);
-
-  // Example 5: Triage a bug
-  // const triage = await BugTriager.run('Login page crashes on Safari when clicking "Forgot Password"');
-  // console.log(triage.output);
+  console.log(custom.definition.name);
 }
 
 main().catch(console.error);
@@ -145,9 +126,9 @@ main().catch(console.error);
   console.log();
   console.log(chalk.gray(`    cd ${name}`));
   console.log(chalk.gray("    npm install"));
-  console.log(chalk.gray("    # Set up auth (pick one):"));
-  console.log(chalk.gray("    #   claude setup-token && export CLAUDE_CODE_OAUTH_TOKEN=..."));
-  console.log(chalk.gray("    #   export ANTHROPIC_API_KEY=sk-ant-..."));
+  console.log(chalk.gray("    claude setup-token"));
+  console.log(chalk.gray("    # add CLAUDE_CODE_OAUTH_TOKEN to .env"));
   console.log(chalk.gray("    npx ts-node index.ts"));
+  console.log(chalk.gray("    agentos dashboard"));
   console.log();
 }

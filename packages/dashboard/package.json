@@ -1,0 +1,27 @@
+{
+  "name": "@agentos/dashboard",
+  "version": "0.1.0",
+  "description": "Local dashboard for AgentOS run history and agent catalog",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc",
+    "dev": "tsc --watch",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "test": "echo 'Dashboard tests run via workspace root'"
+  },
+  "dependencies": {
+    "@agentos/agents": "workspace:*"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

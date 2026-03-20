@@ -1,7 +1,15 @@
-import { createAgent, CustomAgent } from "../create-agent";
+import fs from "fs/promises";
+import os from "os";
+import path from "path";
+import {
+  createAgent,
+  CustomAgent,
+  loadAgent,
+  saveAgent,
+  listSavedAgents,
+} from "../create-agent";
 import { configure } from "../config";
 
-// Mock the Claude Agent SDK
 jest.mock("@anthropic-ai/claude-agent-sdk", () => ({
   query: jest.fn(),
 }));
@@ -11,12 +19,17 @@ const getQueryMock = () => {
 };
 
 describe("createAgent", () => {
-  beforeEach(() => {
+  let tempDir: string;
+
+  beforeEach(async () => {
     jest.clearAllMocks();
     process.env.CLAUDE_CODE_OAUTH_TOKEN = "test-oauth-token";
-    configure({});
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "agentos-builder-"));
+    configure({
+      storageDir: tempDir,
+      persistRuns: false,
+    });
 
-    // Default mock: return a valid agent config JSON
     const mockQuery = getQueryMock();
     mockQuery.mockReturnValue(
       (async function* () {
@@ -24,10 +37,13 @@ describe("createAgent", () => {
           type: "result",
           subtype: "success",
           result: JSON.stringify({
-            systemPrompt:
-              "You are a helpful assistant for summarizing articles.",
-            temperature: 0.4,
-            maxLoops: 8,
+            name: "News Summarizer",
+            summary: "Summarizes news with sources",
+            category: "research",
+            tags: ["news", "research"],
+            allowedTools: ["web_search", "web_scrape"],
+            outputShape: "Bullet summary with sources",
+            systemPrompt: "You are a helpful assistant for summarizing news.",
           }),
           total_cost_usd: 0.001,
           num_turns: 1,
@@ -37,87 +53,75 @@ describe("createAgent", () => {
     );
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     delete process.env.CLAUDE_CODE_OAUTH_TOKEN;
+    await fs.rm(tempDir, { recursive: true, force: true });
   });
 
-  describe("from string description", () => {
-    it("should create a custom agent", async () => {
-      const agent = await createAgent(
-        "An agent that summarizes news articles"
-      );
-
-      expect(agent).toBeInstanceOf(CustomAgent);
-      expect(agent.description).toBe(
-        "An agent that summarizes news articles"
-      );
-    });
-
-    it("should have a working run method", async () => {
-      const agent = await createAgent("A test agent");
-
-      expect(typeof agent.run).toBe("function");
-    });
+  it("should create a custom agent with inferred metadata", async () => {
+    const agent = await createAgent("An agent that summarizes news articles");
+    expect(agent).toBeInstanceOf(CustomAgent);
+    expect(agent.definition.name).toBe("News Summarizer");
+    expect(agent.definition.allowedTools).toEqual(["WebSearch", "WebFetch"]);
+    expect(agent.definition.category).toBe("research");
   });
 
-  describe("from AgentSpec", () => {
-    it("should build directly with tools specified (no LLM call)", async () => {
-      const mockQuery = getQueryMock();
-
-      const agent = await createAgent({
-        task: "Analyze data files",
-        inputs: "CSV file path",
-        outputs: "Summary statistics",
-        tools: ["read_file"],
-      });
-
-      // Should NOT call the SDK since tools are specified
-      expect(mockQuery).not.toHaveBeenCalled();
-      expect(agent).toBeInstanceOf(CustomAgent);
-      expect(agent.description).toBe("Analyze data files");
+  it("should build directly from a structured spec with real tools", async () => {
+    const mockQuery = getQueryMock();
+    const agent = await createAgent({
+      task: "Analyze CSV files",
+      inputs: "CSV file path",
+      outputs: "Summary statistics",
+      tools: ["read_file", "bash"],
     });
 
-    it("should include additional instructions", async () => {
-      const agent = await createAgent({
-        task: "Research topics",
-        tools: ["web_search"],
-        additionalInstructions: "Always include citations",
-      });
-
-      expect(agent).toBeInstanceOf(CustomAgent);
-    });
+    expect(mockQuery).not.toHaveBeenCalled();
+    expect(agent.definition.allowedTools).toEqual(["Read", "Bash"]);
+    expect(agent.description).toContain("Task: Analyze CSV files");
   });
 
-  describe("error handling", () => {
-    it("should use fallback when SDK returns invalid JSON", async () => {
-      const mockQuery = getQueryMock();
-      mockQuery.mockReturnValue(
-        (async function* () {
-          yield {
-            type: "result",
-            subtype: "success",
-            result: "not valid json at all",
-            total_cost_usd: 0.001,
-            num_turns: 1,
-            usage: { input_tokens: 10, output_tokens: 10 },
-          };
-        })()
-      );
+  it("should save and load a custom agent definition", async () => {
+    const agent = await createAgent("An agent that summarizes news articles");
+    await saveAgent(agent, tempDir);
 
-      const agent = await createAgent("A test agent");
+    const loaded = await loadAgent(agent.definition.slug, tempDir);
+    expect(loaded).not.toBeNull();
+    expect(loaded?.definition.name).toBe(agent.definition.name);
 
-      // Should still return a working agent (using fallback config)
-      expect(agent).toBeInstanceOf(CustomAgent);
+    const savedAgents = await listSavedAgents(tempDir);
+    expect(savedAgents).toHaveLength(1);
+    expect(savedAgents[0].kind).toBe("custom");
+  });
+
+  it("should use fallback metadata when SDK returns invalid JSON", async () => {
+    const mockQuery = getQueryMock();
+    mockQuery.mockReturnValue(
+      (async function* () {
+        yield {
+          type: "result",
+          subtype: "success",
+          result: "not valid json at all",
+          total_cost_usd: 0.001,
+          num_turns: 1,
+          usage: { input_tokens: 10, output_tokens: 10 },
+        };
+      })()
+    );
+
+    const agent = await createAgent("A finance agent that reviews pricing");
+    expect(agent).toBeInstanceOf(CustomAgent);
+    expect(agent.definition.name).toBeTruthy();
+    expect(agent.definition.category).toBe("finance");
+  });
+
+  it("should use fallback metadata when SDK throws", async () => {
+    const mockQuery = getQueryMock();
+    mockQuery.mockImplementation(() => {
+      throw new Error("SDK failed");
     });
 
-    it("should use fallback when SDK throws", async () => {
-      const mockQuery = getQueryMock();
-      mockQuery.mockImplementation(() => {
-        throw new Error("SDK failed");
-      });
-
-      const agent = await createAgent("A test agent");
-      expect(agent).toBeInstanceOf(CustomAgent);
-    });
+    const agent = await createAgent("A test agent");
+    expect(agent).toBeInstanceOf(CustomAgent);
+    expect(agent.definition.name).toBeTruthy();
   });
 });

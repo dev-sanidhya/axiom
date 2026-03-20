@@ -1,241 +1,251 @@
 # AgentOS
 
-Pre-built AI agents you can import and use in one line. No AI knowledge required.
+AgentOS is a local-first library of importable AI agents with a description-first custom agent builder and a local dashboard for run history.
 
-**Think shadcn, but for AI agents.**
+The current product shape in this repo is:
+- `@agentos/agents`: 20 built-in agents, custom agent builder, saved custom agents, persisted run records
+- `@agentos/cli`: list, try, create, init, saved-agent listing, dashboard launch
+- `@agentos/dashboard`: local web dashboard for agent catalog and run observability
 
-## Install
+## Positioning
 
-```bash
-npm install @agentos/agents
-```
+AgentOS is for developers and small teams embedding agent capabilities into products and workflows. It is not trying to replace Claude chat. The value is:
+- ready-made agents you can import and run
+- reusable custom agents from one plain-English description
+- local project persistence under `.agentos/`
+- visibility into runs, tools, tokens, loops, duration, cost, and auth mode
 
-## Quick Start
+## Auth
 
-```typescript
-import { ResearchAgent } from '@agentos/agents';
-
-const report = await ResearchAgent.run('Compare React vs Svelte in 2026');
-console.log(report.output);
-```
-
-That's it. No frameworks to learn. No prompt engineering. No tool configuration.
-
-## Authentication
-
-### Option 1: Claude Max/Pro Plan (Recommended)
-
-Use your existing Claude subscription — no API billing needed.
+Primary path for this wave:
 
 ```bash
-# Generate an OAuth token (valid for 1 year)
 claude setup-token
-
-# Set it in your environment
-export CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-...
 ```
 
-AgentOS auto-detects the token. No code changes needed.
-
-### Option 2: Anthropic API Key
+Then set:
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
+CLAUDE_CODE_OAUTH_TOKEN=sk-ant-oat01-...
 ```
 
-### Option 3: Explicit Configuration
+Fallback:
 
-```typescript
-import { configure } from '@agentos/agents';
-
-// With OAuth token (Max/Pro plan)
-configure({ oauthToken: process.env.CLAUDE_CODE_OAUTH_TOKEN });
-
-// Or with API key
-configure({ apiKey: process.env.ANTHROPIC_API_KEY });
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-**Auth resolution order:** `CLAUDE_CODE_OAUTH_TOKEN` > `AGENTOS_API_KEY` > `ANTHROPIC_API_KEY` > config values.
+AgentOS prefers `CLAUDE_CODE_OAUTH_TOKEN` and falls back to API-key auth when needed.
 
-## Available Agents
+## Local Setup
 
-| Agent | What it does | Import |
-|-------|-------------|--------|
-| **Research Agent** | Web research with structured reports and citations | `ResearchAgent` |
-| **Code Review Agent** | Security, quality, and best practices analysis | `CodeReviewAgent` |
-| **Content Writer** | Blog posts, docs, marketing copy | `ContentWriter` |
-| **Data Analyst** | CSV/JSON profiling and statistical analysis | `DataAnalyst` |
-| **Competitor Analyzer** | Market landscape and competitive analysis | `CompetitorAnalyzer` |
-| **Email Drafter** | Professional emails — cold outreach, follow-ups, internal comms | `EmailDrafter` |
-| **SEO Auditor** | Website SEO audit with scoring and recommendations | `SEOAuditor` |
-| **Bug Triager** | Bug report classification, root cause analysis, fix suggestions | `BugTriager` |
+This repo is publish-ready, but the packages are not yet published to npm. Use them locally from the workspace:
 
-### Usage Examples
+```bash
+pnpm install
+pnpm build
+```
 
-```typescript
+Then run the CLI from the repo:
+
+```bash
+node packages/cli/bin/run.js list
+node packages/cli/bin/run.js create
+node packages/cli/bin/run.js dashboard
+```
+
+## Quick Start In Code
+
+```ts
+import "dotenv/config";
 import {
+  configure,
   ResearchAgent,
-  CodeReviewAgent,
-  EmailDrafter,
-  SEOAuditor,
-  BugTriager,
-  DataAnalyst,
-} from '@agentos/agents';
+  PRDWriter,
+  createAgent,
+  loadAgent,
+} from "@agentos/agents";
 
-// Research a topic
-const report = await ResearchAgent.run('AI agent frameworks comparison 2026');
+configure({
+  oauthToken: process.env.CLAUDE_CODE_OAUTH_TOKEN,
+});
 
-// Review code
-const review = await CodeReviewAgent.run('./src/auth.ts');
-
-// Draft an email
-const email = await EmailDrafter.run(
-  'Follow-up email to an investor after a demo call, casual tone'
+const research = await ResearchAgent.run(
+  "Compare the leading AI agent frameworks for product teams."
 );
 
-// Audit SEO
-const seo = await SEOAuditor.run('https://mysite.com');
-
-// Triage a bug
-const triage = await BugTriager.run(
-  'Login page crashes on Safari when clicking Forgot Password'
+const prd = await PRDWriter.run(
+  "Write a PRD for a dashboard that shows agent run history and saved agents."
 );
 
-// Analyze data
-const analysis = await DataAnalyst.run('./sales-data.csv');
+const custom =
+  (await loadAgent("launch-notes-summarizer")) ??
+  (await createAgent(
+    "An agent that summarizes product launch notes into grouped bullet points."
+  ));
+
+const result = await custom.run("Paste the launch notes here");
+console.log(result.output);
 ```
 
-### Result Shape
+## Built-in Agents
 
-Every agent returns an `AgentResult`:
+### Research, Product, and Strategy
+- `ResearchAgent`
+- `CompetitorAnalyzer`
+- `PRDWriter`
+- `MarketSizingAgent`
+- `CustomerFeedbackSynthesizer`
 
-```typescript
-const result = await ResearchAgent.run('...');
+### Engineering and Delivery
+- `CodeReviewAgent`
+- `BugTriager`
+- `TechnicalSpecAgent`
+- `DocumentationAgent`
+- `ReleaseNotesAgent`
+- `TestPlanAgent`
 
-result.output       // string — the agent's final response
-result.success      // boolean — whether it completed successfully
-result.toolCalls    // array — tools used during execution
-result.tokensUsed   // { input, output, total }
-result.cost         // number — estimated cost in USD
-result.duration     // number — execution time in ms
-result.loops        // number — agentic loop iterations
-```
+### Business, Marketing, and Support
+- `ContentWriter`
+- `EmailDrafter`
+- `SEOAuditor`
+- `SalesProspector`
+- `ProposalWriter`
+- `CustomerSupportAgent`
 
-## Build Your Own
+### Data, Finance, and Operations
+- `DataAnalyst`
+- `FinancialAnalyst`
+- `MeetingSummarizer`
 
-```typescript
-import { createAgent } from '@agentos/agents';
+## Custom Agent Builder
 
-// From a plain English description
+The builder is description-first.
+
+```ts
+import { createAgent, saveAgent } from "@agentos/agents";
+
 const agent = await createAgent(
-  'An agent that monitors tech news and summarizes the top stories'
+  "An agent that reads customer interview notes and extracts themes, objections, and feature requests."
 );
-const summary = await agent.run('What happened in tech today?');
 
-// From a structured spec
-const agent = await createAgent({
-  task: 'Analyze GitHub repositories',
-  inputs: 'Repository URL or name',
-  outputs: 'Report with stars, issues, activity metrics',
-  tools: ['web_search', 'web_scrape'],
-});
+await saveAgent(agent);
+const result = await agent.run("Interview notes go here");
 ```
 
-## Streaming
+Generated custom agents include:
+- name
+- summary
+- category
+- tags
+- inferred tool access
+- output shape
+- reusable system instructions
 
-```typescript
-import { Agent } from '@agentos/agents';
+Saved custom agents live in:
 
-const agent = new Agent({
-  instructions: 'You are a helpful assistant.',
-  tools: [],
-});
-
-for await (const event of agent.stream('Tell me about TypeScript')) {
-  if (event.type === 'text_delta') {
-    process.stdout.write(event.delta ?? '');
-  }
-  if (event.type === 'tool_start') {
-    console.log(`\nUsing tool: ${event.tool}`);
-  }
-  if (event.type === 'done') {
-    console.log(`\nCost: $${event.finalResult?.cost}`);
-  }
-}
+```text
+.agentos/agents/<slug>.json
 ```
+
+## Local Persistence
+
+AgentOS stores project-local artifacts under:
+
+```text
+.agentos/
+  agents/
+  runs/
+```
+
+Each persisted run includes:
+- agent metadata
+- input and output
+- success or error
+- tool calls
+- tokens
+- cost
+- duration
+- loops
+- auth mode
+
+## Dashboard
+
+Launch the local dashboard from the project root:
+
+```bash
+node packages/cli/bin/run.js dashboard
+```
+
+Dashboard v1 includes:
+- built-in agent catalog
+- saved custom agent catalog
+- run history
+- run detail view
+- filters for category, kind, status, and date range
+- quick run actions for built-in and custom agents
 
 ## CLI
 
 ```bash
-npx agentos list              # See all 8 available agents
-npx agentos try research      # Try an agent interactively
-npx agentos try email         # Try the email drafter
-npx agentos create            # Build a custom agent via prompts
-npx agentos init my-project   # Scaffold a new project
+agentos list
+agentos agents
+agentos try research-agent "Compare Cursor and Windsurf for a CTO eval."
+agentos create
+agentos dashboard
+agentos init my-agentos-project
 ```
 
-## Configuration
+From this repo before publish, use:
 
-```typescript
-import { configure } from '@agentos/agents';
-
-configure({
-  oauthToken: '...',            // Claude Max/Pro plan OAuth token
-  apiKey: '...',                // Or Anthropic API key
-  baseUrl: '...',               // Custom API endpoint (proxy support)
-  defaultModel: 'claude-sonnet-4-6',
-  maxLoops: 10,                 // Global loop limit
-  maxSpendPerRun: 1.00,         // Circuit breaker: max $ per agent run
-  maxConcurrentRuns: 5,         // Limit concurrent agent executions
-  verbose: true,                // Enable debug logging
-});
+```bash
+node packages/cli/bin/run.js <command>
 ```
 
-Set `BRAVE_SEARCH_API_KEY` for better web search results (falls back to DuckDuckGo if not set).
+## Public API
 
-## Safety Features
+Core exports:
+- `createAgent(...)`
+- `saveAgent(...)`
+- `loadAgent(...)`
+- `listSavedAgents(...)`
+- `getBuiltInAgents()`
+- `getBuiltInAgentById(...)`
 
-- **Spend limits** — Circuit breaker stops agents that exceed cost threshold (default: $1/run)
-- **Loop limits** — Prevents runaway agent loops (configurable per agent)
-- **Tool timeouts** — 30-second timeout on tool execution
-- **Rate limit retry** — Automatic exponential backoff on 429/529 errors
-- **Concurrency control** — Limit how many agents run simultaneously
+Runtime exports:
+- all 20 built-in agents
+- `Agent`
+- `configure(...)`
 
-## How It Works
+Storage helpers:
+- `ensureProjectStorage(...)`
+- `listRunRecords(...)`
+- `loadRunRecord(...)`
 
-AgentOS wraps the Anthropic Claude SDK internally. Each pre-built agent is a curated combination of:
+## Market Context
 
-- **System prompt** refined for reliable, high-quality outputs
-- **Tool integrations** (web search, scraping, file reading) with error handling and content parsing
-- **Safety controls** (loop limits, cost tracking, spend caps, timeouts)
+AgentOS is closest to the space around:
+- agent frameworks such as Mastra, Vercel AI SDK agents, OpenAI Agents, and deepagents
+- tool infrastructure such as Composio
 
-You get the results. We handle the complexity.
+The difference is that AgentOS ships ready-to-use importable agents and a custom builder on top, rather than only giving you primitives.
 
-## Architecture
+## Next Layer
 
-```
-@agentos/agents (the library)
-├── 8 pre-built agents with curated prompts
-├── Agent base class (agentic tool-use loop)
-├── Tool implementations (web search, scrape, file ops)
-├── Auth resolution (OAuth token / API key / proxy)
-└── Safety layer (spend limits, retries, timeouts)
+The next commercial layer is still the AgentOS proxy:
+- one AgentOS key
+- hosted traces and billing
+- caching and cost controls
+- team-level observability
 
-@agentos/cli (the CLI)
-├── list — browse available agents
-├── try  — run agents interactively
-├── create — build custom agents via chat
-└── init — scaffold new projects
-```
-
-Internally uses the Anthropic SDK. Not a framework — a library of ready-to-use agents.
+That layer is not implemented in this repo yet. The current product is local-first and Claude-token powered.
 
 ## Development
 
 ```bash
 pnpm install
 pnpm build
-pnpm test         # 70 tests across 7 suites
+pnpm test
 ```
 
 ## License

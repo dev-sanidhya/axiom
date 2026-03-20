@@ -1,8 +1,10 @@
-import { GlobalConfig } from "./types";
+import path from "path";
+import { AuthMode, GlobalConfig } from "./types";
 
 const DEFAULT_MODEL = "claude-sonnet-4-6";
 const DEFAULT_MAX_LOOPS = 10;
 const DEFAULT_MAX_SPEND_PER_RUN = 1.0; // $1 USD
+const DEFAULT_STORAGE_DIR = path.join(process.cwd(), ".agentos");
 
 let globalConfig: GlobalConfig = {};
 
@@ -40,7 +42,10 @@ export function configure(config: GlobalConfig): void {
  * Get the current global configuration, with defaults applied.
  */
 export function getConfig(): Required<
-  Pick<GlobalConfig, "defaultModel" | "maxLoops" | "verbose" | "maxSpendPerRun">
+  Pick<
+    GlobalConfig,
+    "defaultModel" | "maxLoops" | "verbose" | "maxSpendPerRun" | "persistRuns"
+  >
 > &
   GlobalConfig {
   return {
@@ -49,6 +54,9 @@ export function getConfig(): Required<
     maxLoops: globalConfig.maxLoops ?? DEFAULT_MAX_LOOPS,
     verbose: globalConfig.verbose ?? false,
     maxSpendPerRun: globalConfig.maxSpendPerRun ?? DEFAULT_MAX_SPEND_PER_RUN,
+    persistRuns: globalConfig.persistRuns ?? true,
+    storageDir: globalConfig.storageDir ?? DEFAULT_STORAGE_DIR,
+    projectName: globalConfig.projectName ?? path.basename(process.cwd()),
   };
 }
 
@@ -59,6 +67,7 @@ export interface AuthConfig {
   apiKey?: string;
   oauthToken?: string;
   baseUrl?: string;
+  authMode: AuthMode;
 }
 
 /**
@@ -78,7 +87,11 @@ export function resolveAuth(): AuthConfig {
     process.env.CLAUDE_CODE_OAUTH_TOKEN;
 
   if (oauthToken) {
-    return { oauthToken, baseUrl: globalConfig.baseUrl };
+    return {
+      oauthToken,
+      baseUrl: globalConfig.baseUrl,
+      authMode: "oauth_token",
+    };
   }
 
   // Fall back to API key
@@ -88,7 +101,11 @@ export function resolveAuth(): AuthConfig {
     process.env.ANTHROPIC_API_KEY;
 
   if (apiKey) {
-    return { apiKey, baseUrl: globalConfig.baseUrl };
+    return {
+      apiKey,
+      baseUrl: globalConfig.baseUrl,
+      authMode: "api_key",
+    };
   }
 
   throw new Error(

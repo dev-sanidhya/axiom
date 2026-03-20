@@ -20,6 +20,68 @@ export interface AgentTool {
   execute: (input: Record<string, unknown>) => Promise<string>;
 }
 
+export type AgentKind = "built_in" | "custom";
+
+export type AuthMode = "oauth_token" | "api_key" | "unknown";
+
+export type AgentCategory =
+  | "engineering"
+  | "product"
+  | "research"
+  | "business"
+  | "marketing"
+  | "finance"
+  | "support"
+  | "operations"
+  | "general";
+
+export interface AgentMetadata {
+  id: string;
+  slug: string;
+  name: string;
+  summary: string;
+  description?: string;
+  category: AgentCategory;
+  tags: string[];
+  kind: AgentKind;
+  outputShape?: string;
+}
+
+export interface AgentRegistryEntry extends AgentMetadata {
+  allowedTools: string[];
+}
+
+export interface SavedAgentDefinition extends AgentRegistryEntry {
+  instructions: string;
+  createdAt: string;
+  updatedAt: string;
+  source: "generated" | "structured_spec" | "manual";
+}
+
+export interface PersistedRunRecord {
+  id: string;
+  timestamp: string;
+  projectName: string;
+  cwd: string;
+  agent: AgentRegistryEntry;
+  input: string;
+  inputPreview: string;
+  output: string;
+  outputPreview: string;
+  success: boolean;
+  error?: string;
+  toolCalls: ToolCallRecord[];
+  tokensUsed: {
+    input: number;
+    output: number;
+    total: number;
+  };
+  cost: number;
+  duration: number;
+  loops: number;
+  authMode: AuthMode;
+}
+
 /**
  * Configuration for an agent's behavior.
  */
@@ -40,6 +102,8 @@ export interface AgentConfig {
   maxTokens?: number;
   /** Temperature for generation (0-1) */
   temperature?: number;
+  /** Registry metadata used for persistence and cataloging */
+  metadata?: AgentMetadata;
 }
 
 /**
@@ -128,6 +192,12 @@ export interface GlobalConfig {
   maxSpendPerRun?: number;
   /** Global rate limit: max concurrent agent runs */
   maxConcurrentRuns?: number;
+  /** Base storage directory for custom agents and run artifacts */
+  storageDir?: string;
+  /** Persist run records under the project storage directory */
+  persistRuns?: boolean;
+  /** Explicit project name for persisted run metadata */
+  projectName?: string;
 }
 
 /**

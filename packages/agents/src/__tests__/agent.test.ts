@@ -1,5 +1,8 @@
 import { Agent } from "../agent";
 import { configure } from "../config";
+import os from "os";
+import fs from "fs/promises";
+import path from "path";
 
 // Helper to create an async generator from an array of messages
 function createMockQuery(messages: unknown[]) {
@@ -20,15 +23,22 @@ const getQueryMock = () => {
 };
 
 describe("Agent", () => {
+  let tempDir: string;
+
   beforeEach(() => {
     jest.clearAllMocks();
     // Set env so resolveAuth doesn't throw
     process.env.CLAUDE_CODE_OAUTH_TOKEN = "test-oauth-token";
-    configure({});
+    configure({ persistRuns: false });
   });
 
-  afterEach(() => {
+  beforeEach(async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "agentos-run-"));
+  });
+
+  afterEach(async () => {
     delete process.env.CLAUDE_CODE_OAUTH_TOKEN;
+    await fs.rm(tempDir, { recursive: true, force: true });
   });
 
   describe("constructor", () => {
@@ -311,6 +321,51 @@ describe("Agent", () => {
       expect(callArgs.options.env.CLAUDE_CODE_OAUTH_TOKEN).toBe(
         "test-oauth-token"
       );
+    });
+
+    it("should persist run records with auth mode when enabled", async () => {
+      const mockQuery = getQueryMock();
+      mockQuery.mockReturnValue(
+        createMockQuery([
+          {
+            type: "result",
+            subtype: "success",
+            result: "Persist me",
+            total_cost_usd: 0.001,
+            num_turns: 1,
+            usage: { input_tokens: 10, output_tokens: 10 },
+          },
+        ])()
+      );
+
+      configure({
+        storageDir: tempDir,
+        projectName: "test-project",
+        persistRuns: true,
+      });
+
+      const agent = new Agent({
+        instructions: "Test",
+        metadata: {
+          id: "persisted-agent",
+          slug: "persisted-agent",
+          name: "Persisted Agent",
+          summary: "Test summary",
+          category: "general",
+          tags: ["test"],
+          kind: "custom",
+        },
+      });
+      await agent.run("Test");
+
+      const runFiles = await fs.readdir(path.join(tempDir, "runs"));
+      expect(runFiles).toHaveLength(1);
+
+      const persisted = JSON.parse(
+        await fs.readFile(path.join(tempDir, "runs", runFiles[0]), "utf8")
+      );
+      expect(persisted.authMode).toBe("oauth_token");
+      expect(persisted.agent.name).toBe("Persisted Agent");
     });
 
     it("should enforce concurrency limits", async () => {

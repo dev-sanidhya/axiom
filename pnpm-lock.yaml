@@ -75,6 +75,9 @@ importers:
       '@agentos/agents':
         specifier: workspace:*
         version: link:../agents
+      '@agentos/dashboard':
+        specifier: workspace:*
+        version: link:../dashboard
       chalk:
         specifier: ^4.1.2
         version: 4.1.2
@@ -100,6 +103,12 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.9.3
+
+  packages/dashboard:
+    dependencies:
+      '@agentos/agents':
+        specifier: workspace:*
+        version: link:../agents
 
 packages:
 

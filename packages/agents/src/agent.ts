@@ -1,33 +1,20 @@
+import { randomUUID } from "crypto";
 import { query } from "@anthropic-ai/claude-agent-sdk";
 import {
   AgentConfig,
+  AgentRegistryEntry,
   AgentResult,
+  PersistedRunRecord,
   ProgressEvent,
   RunOptions,
   StreamEvent,
   ToolCallRecord,
 } from "./types";
 import { getConfig, resolveAuth } from "./config";
+import { persistRunRecord, slugify } from "./storage";
 
-// Track concurrent runs for global rate limiting
 let activeRuns = 0;
 
-/**
- * Base Agent class that wraps the Claude Agent SDK.
- *
- * Uses the `query()` function from @anthropic-ai/claude-agent-sdk,
- * which runs Claude Code as a subprocess. This supports OAuth tokens
- * from Claude Max/Pro plans — no API key needed.
- *
- * @example
- * ```ts
- * const agent = new Agent({
- *   instructions: 'You are a helpful research assistant.',
- *   allowedTools: ['WebSearch', 'WebFetch', 'Read'],
- * });
- * const result = await agent.run('Find the latest AI trends');
- * ```
- */
 export class Agent {
   private config: AgentConfig;
 
@@ -35,10 +22,26 @@ export class Agent {
     this.config = config;
   }
 
-  /**
-   * Build environment variables for the Claude Agent SDK subprocess.
-   */
-  private buildEnv(): Record<string, string | undefined> {
+  getRegistryEntry(): AgentRegistryEntry {
+    const metadata = this.config.metadata;
+    return {
+      id: metadata?.id ?? "custom-agent",
+      slug: metadata?.slug ?? slugify(metadata?.name ?? "custom-agent"),
+      name: metadata?.name ?? "Custom Agent",
+      summary: metadata?.summary ?? "Custom AgentOS agent",
+      description: metadata?.description,
+      category: metadata?.category ?? "general",
+      tags: metadata?.tags ?? [],
+      kind: metadata?.kind ?? "custom",
+      allowedTools: this.config.allowedTools ?? [],
+      outputShape: metadata?.outputShape,
+    };
+  }
+
+  private buildEnv(): {
+    env: Record<string, string | undefined>;
+    authMode: ReturnType<typeof resolveAuth>["authMode"];
+  } {
     const auth = resolveAuth();
     const env: Record<string, string | undefined> = { ...process.env };
 
@@ -52,12 +55,9 @@ export class Agent {
       env.ANTHROPIC_BASE_URL = auth.baseUrl;
     }
 
-    return env;
+    return { env, authMode: auth.authMode };
   }
 
-  /**
-   * Build the full prompt with context and format instructions.
-   */
   private buildPrompt(input: string, options: RunOptions): string {
     let prompt = input;
 
@@ -74,15 +74,12 @@ export class Agent {
     return prompt;
   }
 
-  /**
-   * Build the options object for the SDK query() call.
-   */
   private buildQueryOptions(options: RunOptions) {
     const globalCfg = getConfig();
     const model = this.config.model ?? globalCfg.defaultModel;
     const maxTurns = options.maxLoops ?? this.config.maxLoops ?? globalCfg.maxLoops;
     const maxSpend = globalCfg.maxSpendPerRun;
-    const env = this.buildEnv();
+    const { env, authMode } = this.buildEnv();
 
     const queryOptions: Record<string, unknown> = {
       model,
@@ -94,27 +91,56 @@ export class Agent {
       env,
     };
 
-    // If specific tools are configured, only allow those
     if (this.config.allowedTools) {
       queryOptions.allowedTools = this.config.allowedTools;
     }
 
-    return queryOptions;
+    return {
+      queryOptions,
+      authMode,
+    };
   }
 
-  /**
-   * Run the agent with the given input.
-   */
+  private async persistRun(
+    input: string,
+    result: AgentResult,
+    authMode: PersistedRunRecord["authMode"]
+  ): Promise<void> {
+    const globalCfg = getConfig();
+    if (!globalCfg.persistRuns) {
+      return;
+    }
+
+    const registryEntry = this.getRegistryEntry();
+    const runRecord: PersistedRunRecord = {
+      id: randomUUID(),
+      timestamp: new Date().toISOString(),
+      projectName: globalCfg.projectName ?? slugify(process.cwd()),
+      cwd: process.cwd(),
+      agent: registryEntry,
+      input,
+      inputPreview: input.slice(0, 500),
+      output: result.output,
+      outputPreview: result.output.slice(0, 500),
+      success: result.success,
+      error: result.error,
+      toolCalls: result.toolCalls,
+      tokensUsed: result.tokensUsed,
+      cost: result.cost,
+      duration: result.duration,
+      loops: result.loops,
+      authMode,
+    };
+
+    await persistRunRecord(runRecord, globalCfg.storageDir);
+  }
+
   async run(input: string, options: RunOptions = {}): Promise<AgentResult> {
     const startTime = Date.now();
     const globalCfg = getConfig();
 
-    // Concurrency guard
-    if (
-      globalCfg.maxConcurrentRuns &&
-      activeRuns >= globalCfg.maxConcurrentRuns
-    ) {
-      return {
+    if (globalCfg.maxConcurrentRuns && activeRuns >= globalCfg.maxConcurrentRuns) {
+      const blockedResult: AgentResult = {
         output: "",
         success: false,
         error: `Max concurrent runs (${globalCfg.maxConcurrentRuns}) exceeded. Wait for other agents to finish.`,
@@ -124,20 +150,21 @@ export class Agent {
         duration: Date.now() - startTime,
         loops: 0,
       };
+      await this.persistRun(input, blockedResult, "unknown");
+      return blockedResult;
     }
 
     activeRuns++;
 
     try {
-      return await this.executeWithSDK(input, options, startTime);
+      const { result, authMode } = await this.executeWithSDK(input, options, startTime);
+      await this.persistRun(input, result, authMode);
+      return result;
     } finally {
       activeRuns--;
     }
   }
 
-  /**
-   * Run the agent with streaming — yields events as they happen.
-   */
   async *stream(
     input: string,
     options: RunOptions = {}
@@ -147,7 +174,7 @@ export class Agent {
 
     try {
       const prompt = this.buildPrompt(input, options);
-      const queryOptions = this.buildQueryOptions(options);
+      const { queryOptions } = this.buildQueryOptions(options);
       const toolCalls: ToolCallRecord[] = [];
 
       const sdkQuery = query({
@@ -189,7 +216,12 @@ export class Agent {
             finalResult: {
               output: finalOutput,
               success: message.subtype === "success",
-              error: message.subtype !== "success" ? ("errors" in message ? message.errors.join(", ") : "Unknown error") : undefined,
+              error:
+                message.subtype !== "success"
+                  ? "errors" in message
+                    ? message.errors.join(", ")
+                    : "Unknown error"
+                  : undefined,
               toolCalls,
               tokensUsed: {
                 input: message.usage?.input_tokens ?? 0,
@@ -213,24 +245,23 @@ export class Agent {
     }
   }
 
-  /**
-   * Execute using the Claude Agent SDK's query() function.
-   */
   private async executeWithSDK(
     input: string,
     options: RunOptions,
     startTime: number
-  ): Promise<AgentResult> {
+  ): Promise<{
+    result: AgentResult;
+    authMode: PersistedRunRecord["authMode"];
+  }> {
     const globalCfg = getConfig();
     const prompt = this.buildPrompt(input, options);
-    const queryOptions = this.buildQueryOptions(options);
-
     const toolCalls: ToolCallRecord[] = [];
     let finalOutput = "";
     let totalCost = 0;
     let loops = 0;
     let totalInputTokens = 0;
     let totalOutputTokens = 0;
+    let authMode: PersistedRunRecord["authMode"] = "unknown";
 
     const emit = (event: Omit<ProgressEvent, "timestamp">) => {
       if (options.onProgress) {
@@ -252,6 +283,9 @@ export class Agent {
     };
 
     try {
+      const { queryOptions, authMode: resolvedAuthMode } = this.buildQueryOptions(options);
+      authMode = resolvedAuthMode;
+
       const sdkQuery = query({
         prompt,
         options: queryOptions as Parameters<typeof query>[0]["options"],
@@ -295,50 +329,59 @@ export class Agent {
           } else {
             const errors = "errors" in message ? message.errors : [];
             return {
-              output: "",
-              success: false,
-              error: errors.join(", ") || `Agent stopped: ${message.subtype}`,
-              toolCalls,
-              tokensUsed: {
-                input: message.usage?.input_tokens ?? 0,
-                output: message.usage?.output_tokens ?? 0,
-                total: (message.usage?.input_tokens ?? 0) + (message.usage?.output_tokens ?? 0),
+              authMode,
+              result: {
+                output: "",
+                success: false,
+                error: errors.join(", ") || `Agent stopped: ${message.subtype}`,
+                toolCalls,
+                tokensUsed: {
+                  input: message.usage?.input_tokens ?? 0,
+                  output: message.usage?.output_tokens ?? 0,
+                  total: (message.usage?.input_tokens ?? 0) + (message.usage?.output_tokens ?? 0),
+                },
+                cost: message.total_cost_usd ?? 0,
+                duration: Date.now() - startTime,
+                loops: message.num_turns ?? 0,
               },
-              cost: message.total_cost_usd ?? 0,
-              duration: Date.now() - startTime,
-              loops: message.num_turns ?? 0,
             };
           }
         }
       }
 
       return {
-        output: finalOutput,
-        success: true,
-        toolCalls,
-        tokensUsed: {
-          input: totalInputTokens,
-          output: totalOutputTokens,
-          total: totalInputTokens + totalOutputTokens,
+        authMode,
+        result: {
+          output: finalOutput,
+          success: true,
+          toolCalls,
+          tokensUsed: {
+            input: totalInputTokens,
+            output: totalOutputTokens,
+            total: totalInputTokens + totalOutputTokens,
+          },
+          cost: Math.round(totalCost * 10000) / 10000,
+          duration: Date.now() - startTime,
+          loops,
         },
-        cost: Math.round(totalCost * 10000) / 10000,
-        duration: Date.now() - startTime,
-        loops,
       };
     } catch (err) {
       return {
-        output: "",
-        success: false,
-        error: err instanceof Error ? err.message : String(err),
-        toolCalls,
-        tokensUsed: {
-          input: totalInputTokens,
-          output: totalOutputTokens,
-          total: totalInputTokens + totalOutputTokens,
+        authMode,
+        result: {
+          output: "",
+          success: false,
+          error: err instanceof Error ? err.message : String(err),
+          toolCalls,
+          tokensUsed: {
+            input: totalInputTokens,
+            output: totalOutputTokens,
+            total: totalInputTokens + totalOutputTokens,
+          },
+          cost: 0,
+          duration: Date.now() - startTime,
+          loops,
         },
-        cost: 0,
-        duration: Date.now() - startTime,
-        loops,
       };
     }
   }

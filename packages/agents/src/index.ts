@@ -1,7 +1,5 @@
-// ─── Configuration ───────────────────────────────────────────────
 export { configure } from "./config";
 
-// ─── Pre-built Agents ────────────────────────────────────────────
 export {
   ResearchAgent,
   CodeReviewAgent,
@@ -11,16 +9,48 @@ export {
   EmailDrafter,
   SEOAuditor,
   BugTriager,
+  PRDWriter,
+  TechnicalSpecAgent,
+  DocumentationAgent,
+  ReleaseNotesAgent,
+  TestPlanAgent,
+  MeetingSummarizer,
+  SalesProspector,
+  ProposalWriter,
+  CustomerSupportAgent,
+  FinancialAnalyst,
+  MarketSizingAgent,
+  CustomerFeedbackSynthesizer,
+  getBuiltInAgents,
+  getBuiltInAgentById,
 } from "./agents";
 
-// ─── Custom Agent Builder ────────────────────────────────────────
-export { createAgent } from "./create-agent";
-export type { AgentSpec, CustomAgent } from "./create-agent";
+export {
+  createAgent,
+  createAgentFromDefinition,
+  saveAgent,
+  loadAgent,
+  listSavedAgents,
+  CustomAgent,
+  FRIENDLY_TO_SDK_TOOLS,
+  mapFriendlyToolsToSdk,
+  mapSdkToolsToFriendly,
+} from "./create-agent";
+export type { AgentSpec } from "./create-agent";
 
-// ─── Base Agent Class (for advanced users) ───────────────────────
 export { Agent } from "./agent";
 
-// ─── Types ───────────────────────────────────────────────────────
+export {
+  ensureProjectStorage,
+  getAgentsDirectory,
+  getRunsDirectory,
+  listRunRecords,
+  loadRunRecord,
+  loadAgentDefinition,
+  listSavedAgentDefinitions,
+  slugify,
+} from "./storage";
+
 export type {
   AgentTool,
   AgentConfig,
@@ -30,4 +60,11 @@ export type {
   ToolCallRecord,
   GlobalConfig,
   StreamEvent,
+  AgentKind,
+  AgentCategory,
+  AgentMetadata,
+  AgentRegistryEntry,
+  SavedAgentDefinition,
+  PersistedRunRecord,
+  AuthMode,
 } from "./types";

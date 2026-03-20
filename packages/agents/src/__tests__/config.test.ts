@@ -53,6 +53,8 @@ describe("config", () => {
       expect(cfg.maxLoops).toBe(10);
       expect(cfg.verbose).toBe(false);
       expect(cfg.maxSpendPerRun).toBe(1.0);
+      expect(cfg.persistRuns).toBe(true);
+      expect(cfg.storageDir).toContain(".agentos");
     });
 
     it("should override defaults with configured values", () => {
@@ -69,6 +71,7 @@ describe("config", () => {
       const auth = resolveAuth();
       expect(auth.oauthToken).toBe("sk-ant-oat01-env");
       expect(auth.apiKey).toBeUndefined();
+      expect(auth.authMode).toBe("oauth_token");
     });
 
     it("should use config oauthToken over env API key", () => {
@@ -82,12 +85,14 @@ describe("config", () => {
       process.env.AGENTOS_API_KEY = "aos-key";
       const auth = resolveAuth();
       expect(auth.apiKey).toBe("aos-key");
+      expect(auth.authMode).toBe("api_key");
     });
 
     it("should fall back to ANTHROPIC_API_KEY", () => {
       process.env.ANTHROPIC_API_KEY = "sk-ant-key";
       const auth = resolveAuth();
       expect(auth.apiKey).toBe("sk-ant-key");
+      expect(auth.authMode).toBe("api_key");
     });
 
     it("should fall back to config apiKey", () => {

@@ -1,7 +1,7 @@
 {
   "name": "@agentos/agents",
   "version": "0.1.0",
-  "description": "Pre-built AI agents you can import and use in one line. No AI knowledge required.",
+  "description": "Importable AI agents, custom agent builder, and local project persistence for AgentOS.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -9,9 +9,9 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc",
     "dev": "tsc --watch",
-    "clean": "rm -rf dist",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "test": "jest --config jest.config.ts"
   },
   "keywords": [
@@ -48,6 +48,9 @@
     "typescript": "^5.3.3"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=18.0.0"
   }
