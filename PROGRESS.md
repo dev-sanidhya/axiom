@@ -78,6 +78,9 @@
 #### **✅ Production-Ready Runtime Agents:**
 - **✅ Research Agent** - Web research with multi-source synthesis
 - **✅ Code Review Agent** - Comprehensive code analysis and security scanning
+- **✅ Data Analysis Agent** - CSV/JSON profiling with dataset summaries and recommendations
+- **✅ Task Planner Agent** - Goal-to-plan conversion with phases, risks, and done criteria
+- **✅ Documentation Agent** - File/directory summarization into documentation baselines
 
 ### **📁 Template Mode (Copy Code) - COMPLETE**
 
@@ -118,7 +121,7 @@
 - **✅ Dependency Management** - Auto-installation prompts and instructions
 - **✅ Post-Install Guidance** - Clear next steps and examples
 
-### **🤖 Complete Agent Template Library - 8/8 TEMPLATES**
+### **🤖 Complete Agent Template Library - 14/14 TEMPLATES**
 
 #### **✅ Research Agent Templates (4/4 Complete)**
 
@@ -196,6 +199,23 @@
 - Modular architecture for easy extension
 - Custom analysis rules and patterns
 - Perfect for integration into existing tools
+
+#### **✅ Additional Utility Agent Templates (6/6 Complete)**
+
+**✅ Data Analysis Agent (2/2 Complete)** - `data-analysis-agent/templates/`
+- **Raw Python** - Lightweight dataset profiling for CSV and JSON inputs
+- **Raw TypeScript** - Type-safe dataset profiler for Node.js projects
+- Outputs dataset overview, missing-data summary, numeric insights, and recommendations
+
+**✅ Task Planner Agent (2/2 Complete)** - `task-planner-agent/templates/`
+- **Raw Python** - Simple planning helper for scripts and automations
+- **Raw TypeScript** - Planning utility for product and engineering workflows
+- Converts a goal into phases, risks, and explicit done criteria
+
+**✅ Documentation Agent (2/2 Complete)** - `documentation-agent/templates/`
+- **Raw Python** - Generates documentation baselines for files and small directory trees
+- **Raw TypeScript** - Documentation summarizer for Node.js and TypeScript projects
+- Extracts exports, classes, functions, headings, and README structure suggestions
 
 ### **📋 Complete Manifest System:**
 - **✅ research-agent/manifest.json** - Comprehensive metadata for all variants
@@ -304,8 +324,9 @@
 - **✅ Advanced Template Engine** - Sophisticated variable processing with multiple case formats
 - **✅ Smart Project Detection** - Confidence scoring and intelligent recommendations
 - **✅ Interactive CLI Experience** - User-friendly prompts and guidance
-- **✅ Comprehensive Documentation** - 16 detailed README files with examples
+- **✅ Comprehensive Documentation** - 22 detailed README files with examples
 - **✅ Production-Ready Quality** - Enterprise-grade security and error handling
+- **✅ Built-in Runtime Fallback** - `agent run` now loads built-in library agents as well as workspace-local agents
 
 ---
 
@@ -317,6 +338,9 @@
 ```bash
 # Auto-detects your project and recommends best template
 agent add research-agent
+agent add data-analysis-agent
+agent add task-planner-agent
+agent add documentation-agent
 
 # Choose specific framework and language
 agent add research-agent --framework langchain-python
@@ -328,6 +352,9 @@ agent add code-review-agent --framework crewai
 # Execute agents instantly with full debugging
 agent run research-agent --input "Latest AI trends 2026"
 agent run code-review-agent --input "./src/components/"
+agent run data-analysis-agent --input "./data/sales.csv"
+agent run task-planner-agent --input "Goal: ship reporting dashboard"
+agent run documentation-agent --input "./src/index.ts"
 ```
 
 ### **🎨 Framework Flexibility:**
@@ -376,10 +403,10 @@ With Phase 1 complete, we have multiple exciting directions:
 ## 🏆 **Success Metrics - Phase 1 Achievements**
 
 ### **✅ Technical Metrics:**
-- **8 Templates Created** (Research + Code Review × 4 frameworks each)
+- **14 Templates Created** (Research + Code Review + Utility Agents)
 - **4 Frameworks Supported** (LangChain Python/TS, CrewAI, Raw Python)
-- **2 Agent Types** with complete multi-framework coverage
-- **16 Documentation Files** with comprehensive examples
+- **5 Agent Types** across runtime and template modes
+- **22 Documentation Files** with comprehensive examples
 - **100% Template Coverage** across all planned frameworks
 - **Advanced CLI** with smart detection and interactive features
 
@@ -396,6 +423,7 @@ With Phase 1 complete, we have multiple exciting directions:
 - **Variable Substitution** with multiple case transformations
 - **Dependency Management** with auto-installation
 - **Framework Detection** with intelligent recommendations
+- **Built-in Runtime Loading** for library agents via `agent run`
 
 ---
 

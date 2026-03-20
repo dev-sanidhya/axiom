@@ -1,0 +1,70 @@
+{
+  "name": "data-analysis-agent",
+  "version": "1.0.0",
+  "description": "Profiles CSV or JSON datasets and produces a concise analysis report",
+  "author": "Agent Platform",
+  "license": "MIT",
+  "tags": ["data", "analysis", "csv", "json", "reporting"],
+  "capabilities": {
+    "tools": ["read-file"],
+    "useCases": [
+      "dataset-profiling",
+      "csv-analysis",
+      "json-analysis",
+      "reporting-preparation"
+    ]
+  },
+  "templates": {
+    "frameworks": ["raw"],
+    "languages": ["python", "typescript"],
+    "variants": {
+      "raw-python": {
+        "path": "templates/raw-python",
+        "language": "python",
+        "framework": "raw",
+        "description": "Framework-free Python dataset profiler",
+        "files": {
+          "agent": "{{agent_name}}.py",
+          "example": "example.py",
+          "readme": "README.md",
+          "requirements": "requirements.txt"
+        }
+      },
+      "raw-typescript": {
+        "path": "templates/raw-typescript",
+        "language": "typescript",
+        "framework": "raw",
+        "description": "Framework-free TypeScript dataset profiler",
+        "dependencies": {
+          "node": ">=18",
+          "packages": {
+            "tsx": "^4.19.0",
+            "typescript": "^5.6.0",
+            "@types/node": "^22.0.0"
+          }
+        },
+        "files": {
+          "agent": "{{agentName}}.ts",
+          "example": "example.ts",
+          "readme": "README.md",
+          "package": "package.json",
+          "tsconfig": "tsconfig.json"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "CSV Profiling",
+      "description": "Inspect a small sales dataset",
+      "input": "sales.csv",
+      "expectedOutput": "Row counts, column summaries, missing data, and recommendations"
+    },
+    {
+      "title": "Inline JSON",
+      "description": "Analyze a JSON array without saving a file",
+      "input": "[{\"month\":\"Jan\",\"revenue\":1200},{\"month\":\"Feb\",\"revenue\":1450}]",
+      "expectedOutput": "Structured dataset overview with numeric trends"
+    }
+  ]
+}

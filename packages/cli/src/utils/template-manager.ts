@@ -270,12 +270,14 @@ export function createTemplateVariables(context: TemplateContext): Record<string
     agentName: toCamelCase(agentName),
     AgentName: toPascalCase(agentName),
     'agent-name': toKebabCase(agentName),
+    package_name: toKebabCase(agentName),
 
     // Other context
     template_name: context.templateName,
     framework: context.framework,
     language: context.language,
     author: context.author,
+    author_name: context.author,
     description: context.description,
 
     // Current date

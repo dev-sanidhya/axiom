@@ -1,0 +1,64 @@
+{
+  "name": "documentation-agent",
+  "version": "1.0.0",
+  "description": "Reads files or directories and turns them into a documentation baseline",
+  "author": "Agent Platform",
+  "license": "MIT",
+  "tags": ["documentation", "readme", "developer-experience", "api-docs"],
+  "capabilities": {
+    "tools": ["read-file", "list-files"],
+    "useCases": [
+      "readme-generation",
+      "api-summary",
+      "module-overview",
+      "codebase-onboarding"
+    ]
+  },
+  "templates": {
+    "frameworks": ["raw"],
+    "languages": ["python", "typescript"],
+    "variants": {
+      "raw-python": {
+        "path": "templates/raw-python",
+        "language": "python",
+        "framework": "raw",
+        "description": "Framework-free Python documentation generator",
+        "files": {
+          "agent": "{{agent_name}}.py",
+          "example": "example.py",
+          "readme": "README.md",
+          "requirements": "requirements.txt"
+        }
+      },
+      "raw-typescript": {
+        "path": "templates/raw-typescript",
+        "language": "typescript",
+        "framework": "raw",
+        "description": "Framework-free TypeScript documentation generator",
+        "dependencies": {
+          "node": ">=18",
+          "packages": {
+            "tsx": "^4.19.0",
+            "typescript": "^5.6.0",
+            "@types/node": "^22.0.0"
+          }
+        },
+        "files": {
+          "agent": "{{agentName}}.ts",
+          "example": "example.ts",
+          "readme": "README.md",
+          "package": "package.json",
+          "tsconfig": "tsconfig.json"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Document a module",
+      "description": "Summarize a source file into a README-style output",
+      "input": "./src/index.ts",
+      "expectedOutput": "Overview, notable symbols, and documentation gaps"
+    }
+  ]
+}

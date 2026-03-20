@@ -54,7 +54,7 @@ export async function loadAgent(agentName: string): Promise<AgentDefinition | nu
     throw lastLoadError;
   }
 
-  return null;
+  return loadBuiltInAgent(agentName);
 }
 
 /**
@@ -120,4 +120,29 @@ async function loadTypeScriptModule(modulePath: string): Promise<any> {
   }
 
   return requireFromHere(modulePath);
+}
+
+async function loadBuiltInAgent(agentName: string): Promise<AgentDefinition | null> {
+  const devPath = path.resolve(__dirname, '../../../templates/src/agents', `${agentName}.ts`);
+  const prodPath = path.resolve(
+    __dirname,
+    '../../node_modules/@agent-platform/templates/dist/agents',
+    `${agentName}.js`
+  );
+
+  for (const modulePath of [devPath, prodPath]) {
+    try {
+      await fs.access(modulePath);
+    } catch {
+      continue;
+    }
+
+    const module = modulePath.endsWith('.ts')
+      ? await loadTypeScriptModule(modulePath)
+      : await import(modulePath);
+
+    return module.default || module;
+  }
+
+  return null;
 }

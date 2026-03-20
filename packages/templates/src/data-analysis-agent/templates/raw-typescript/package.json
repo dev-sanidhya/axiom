@@ -1,0 +1,20 @@
+{
+  "name": "{{agent-name}}",
+  "version": "1.0.0",
+  "description": "{{description}}",
+  "type": "module",
+  "main": "dist/{{agentName}}.js",
+  "scripts": {
+    "build": "tsc",
+    "example": "tsx example.ts",
+    "start": "node dist/{{agentName}}.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "author": "{{author}}",
+  "license": "MIT"
+}

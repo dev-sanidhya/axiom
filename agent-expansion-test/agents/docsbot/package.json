@@ -1,0 +1,20 @@
+{
+  "name": "docsbot",
+  "version": "1.0.0",
+  "description": "Reads files or directories and turns them into a documentation baseline",
+  "type": "module",
+  "main": "dist/docsbot.js",
+  "scripts": {
+    "build": "tsc",
+    "example": "tsx example.ts",
+    "start": "node dist/docsbot.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "author": "shish",
+  "license": "MIT"
+}

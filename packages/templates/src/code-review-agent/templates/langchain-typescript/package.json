@@ -49,14 +49,6 @@
   ],
   "author": "{{author_name}}",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "{{repository_url}}"
-  },
-  "bugs": {
-    "url": "{{repository_url}}/issues"
-  },
-  "homepage": "{{repository_url}}#readme",
   "files": [
     "dist/**/*",
     "README.md",

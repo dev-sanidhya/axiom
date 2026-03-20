@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@agent-platform/core": "workspace:*",
+    "@agent-platform/templates": "workspace:*",
     "@oclif/core": "^3.15.1",
     "@oclif/plugin-help": "^6.0.9",
     "chalk": "^4.1.2",

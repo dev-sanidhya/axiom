@@ -1,0 +1,64 @@
+{
+  "name": "task-planner-agent",
+  "version": "1.0.0",
+  "description": "Turns a goal into a phased execution plan with risks and done criteria",
+  "author": "Agent Platform",
+  "license": "MIT",
+  "tags": ["planning", "execution", "roadmap", "project-management"],
+  "capabilities": {
+    "tools": [],
+    "useCases": [
+      "project-planning",
+      "feature-breakdown",
+      "delivery-planning",
+      "execution-checklists"
+    ]
+  },
+  "templates": {
+    "frameworks": ["raw"],
+    "languages": ["python", "typescript"],
+    "variants": {
+      "raw-python": {
+        "path": "templates/raw-python",
+        "language": "python",
+        "framework": "raw",
+        "description": "Framework-free Python planning agent",
+        "files": {
+          "agent": "{{agent_name}}.py",
+          "example": "example.py",
+          "readme": "README.md",
+          "requirements": "requirements.txt"
+        }
+      },
+      "raw-typescript": {
+        "path": "templates/raw-typescript",
+        "language": "typescript",
+        "framework": "raw",
+        "description": "Framework-free TypeScript planning agent",
+        "dependencies": {
+          "node": ">=18",
+          "packages": {
+            "tsx": "^4.19.0",
+            "typescript": "^5.6.0",
+            "@types/node": "^22.0.0"
+          }
+        },
+        "files": {
+          "agent": "{{agentName}}.ts",
+          "example": "example.ts",
+          "readme": "README.md",
+          "package": "package.json",
+          "tsconfig": "tsconfig.json"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "title": "Feature Planning",
+      "description": "Turn a feature request into an execution plan",
+      "input": "Goal: Ship a CSV import flow\nConstraints: Two weeks, one engineer\nDeliverables: UI, validation, docs",
+      "expectedOutput": "Phased implementation plan with risks and done criteria"
+    }
+  ]
+}

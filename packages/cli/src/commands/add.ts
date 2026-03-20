@@ -296,13 +296,14 @@ export default class Add extends Command {
     language: LanguageType
   ): void {
     const relativePath = path.relative(process.cwd(), targetPath);
+    const usage = this.getUsageSnippet(templateName, agentName, language);
 
     this.log(chalk.bold.green('\n🚀 Next Steps:\n'));
 
-    this.log(chalk.bold('1. Configure API keys:'));
+    this.log(chalk.bold('1. Review the generated files:'));
     this.log(chalk.cyan(`   cd ${relativePath}`));
-    this.log(chalk.cyan('   copy .env.example .env'));
-    this.log(chalk.cyan('   # Edit .env with your API keys'));
+    this.log(chalk.cyan('   dir'));
+    this.log(chalk.cyan('   # Read README.md for setup and customization notes'));
 
     this.log(chalk.bold('\n2. Run the example:'));
     if (language === 'python') {
@@ -314,15 +315,80 @@ export default class Add extends Command {
     }
 
     this.log(chalk.bold('\n3. Use in your code:'));
-    if (language === 'python') {
-      this.log(chalk.cyan(`   from ${agentName} import research`));
-      this.log(chalk.cyan("   result = research('your question')"));
-    } else {
-      this.log(chalk.cyan(`   import { research } from './${agentName}';`));
-      this.log(chalk.cyan("   const result = await research('your question');"));
-    }
+    this.log(chalk.cyan(`   ${usage.importLine}`));
+    this.log(chalk.cyan(`   ${usage.callLine}`));
 
     this.log(chalk.dim(`\n📖 See ${relativePath}/README.md for detailed documentation`));
+  }
+
+  private getUsageSnippet(
+    templateName: string,
+    agentName: string,
+    language: LanguageType
+  ): { importLine: string; callLine: string } {
+    const pythonSnippets: Record<string, { importLine: string; callLine: string }> = {
+      'research-agent': {
+        importLine: `from ${agentName} import research`,
+        callLine: "result = research('your question')",
+      },
+      'code-review-agent': {
+        importLine: `from ${agentName} import CodeReviewAgent`,
+        callLine: `reviewer = CodeReviewAgent(); result = reviewer.review('path/to/file.py')`,
+      },
+      'data-analysis-agent': {
+        importLine: `from ${agentName} import analyze`,
+        callLine: "report = analyze('path/to/data.csv')",
+      },
+      'task-planner-agent': {
+        importLine: `from ${agentName} import plan_task`,
+        callLine: "plan = plan_task('Goal: ship feature X')",
+      },
+      'documentation-agent': {
+        importLine: `from ${agentName} import document`,
+        callLine: "summary = document('src')",
+      },
+    };
+
+    const typescriptSnippets: Record<string, { importLine: string; callLine: string }> = {
+      'research-agent': {
+        importLine: `import { research } from './${agentName}';`,
+        callLine: "const result = await research('your question');",
+      },
+      'code-review-agent': {
+        importLine: `import { ${this.toPascalCase(agentName)} } from './${agentName}';`,
+        callLine: `const reviewer = new ${this.toPascalCase(agentName)}(...);`,
+      },
+      'data-analysis-agent': {
+        importLine: `import { analyze } from './${agentName}';`,
+        callLine: "const report = await analyze('path/to/data.csv');",
+      },
+      'task-planner-agent': {
+        importLine: `import { planTask } from './${agentName}';`,
+        callLine: "const plan = planTask('Goal: ship feature X');",
+      },
+      'documentation-agent': {
+        importLine: `import { document } from './${agentName}';`,
+        callLine: "const summary = await document('src');",
+      },
+    };
+
+    if (language === 'python') {
+      return pythonSnippets[templateName] ?? {
+        importLine: `from ${agentName} import main`,
+        callLine: "result = main('your input')",
+      };
+    }
+
+    return typescriptSnippets[templateName] ?? {
+      importLine: `import './${agentName}';`,
+      callLine: '// Adapt the generated module to your use case',
+    };
+  }
+
+  private toPascalCase(value: string): string {
+    return value
+      .replace(/[-_](\w)/g, (_, char: string) => char.toUpperCase())
+      .replace(/^\w/, char => char.toUpperCase());
   }
 
   private async getAuthorName(): Promise<string> {
