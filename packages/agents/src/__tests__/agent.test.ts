@@ -33,7 +33,7 @@ describe("Agent", () => {
   });
 
   beforeEach(async () => {
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "agentos-run-"));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "axiom-run-"));
   });
 
   afterEach(async () => {

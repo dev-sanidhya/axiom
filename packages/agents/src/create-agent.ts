@@ -25,7 +25,7 @@ const FRIENDLY_TO_SDK_TOOLS: Record<string, string> = {
   bash: "Bash",
 };
 
-const BUILDER_PROMPT = `You are AgentOS Builder. Turn a plain-English agent description into a reusable agent definition.
+const BUILDER_PROMPT = `You are axiom Builder. Turn a plain-English agent description into a reusable agent definition.
 
 Return strict JSON with this shape:
 {

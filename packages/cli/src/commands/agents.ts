@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { listSavedAgentDefinitions } from "@agentos/agents";
+import { listSavedAgentDefinitions } from "@axiom/agents";
 
 export async function listCustomAgents(): Promise<void> {
   const agents = await listSavedAgentDefinitions();
@@ -12,7 +12,7 @@ export async function listCustomAgents(): Promise<void> {
   console.log();
 
   if (agents.length === 0) {
-    console.log(chalk.gray("  No saved custom agents found in .agentos/agents"));
+    console.log(chalk.gray("  No saved custom agents found in .axiom/agents"));
     console.log();
     return;
   }

@@ -4,12 +4,12 @@ import { AuthMode, GlobalConfig } from "./types";
 const DEFAULT_MODEL = "claude-sonnet-4-6";
 const DEFAULT_MAX_LOOPS = 10;
 const DEFAULT_MAX_SPEND_PER_RUN = 1.0; // $1 USD
-const DEFAULT_STORAGE_DIR = path.join(process.cwd(), ".agentos");
+const DEFAULT_STORAGE_DIR = path.join(process.cwd(), ".axiom");
 
 let globalConfig: GlobalConfig = {};
 
 /**
- * Configure AgentOS globally. Call this once before using any agents.
+ * Configure axiom globally. Call this once before using any agents.
  *
  * @example
  * ```ts
@@ -25,8 +25,8 @@ let globalConfig: GlobalConfig = {};
  *
  * @example
  * ```ts
- * // With AgentOS proxy (one key for everything)
- * configure({ apiKey: process.env.AGENTOS_API_KEY, baseUrl: 'https://api.agentos.dev' });
+ * // With axiom proxy (one key for everything)
+ * configure({ apiKey: process.env.AXIOM_API_KEY, baseUrl: 'https://api.axiom.dev' });
  * ```
  */
 export function configure(config: GlobalConfig): void {
@@ -76,7 +76,7 @@ export interface AuthConfig {
  * Priority order:
  * 1. CLAUDE_CODE_OAUTH_TOKEN (Max/Pro plan — free with subscription)
  * 2. Config oauthToken
- * 3. AGENTOS_API_KEY (future proxy)
+ * 3. AXIOM_API_KEY (future proxy)
  * 4. ANTHROPIC_API_KEY (standard API key)
  * 5. Config apiKey
  */
@@ -97,7 +97,7 @@ export function resolveAuth(): AuthConfig {
   // Fall back to API key
   const apiKey =
     globalConfig.apiKey ??
-    process.env.AGENTOS_API_KEY ??
+    process.env.AXIOM_API_KEY ??
     process.env.ANTHROPIC_API_KEY;
 
   if (apiKey) {

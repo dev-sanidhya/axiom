@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import ora from "ora";
 import inquirer from "inquirer";
-import { getBuiltInAgentById, getBuiltInAgents } from "@agentos/agents";
+import { getBuiltInAgentById, getBuiltInAgents } from "@axiom/agents";
 import { configureRuntime } from "../support";
 
 function resolveAgent(alias?: string) {

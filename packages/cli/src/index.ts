@@ -10,20 +10,20 @@ import { openDashboard } from "./commands/dashboard";
 const program = new Command();
 
 program
-  .name("agentos")
+  .name("axiom")
   .description("Importable prebuilt agents, a custom agent builder, and a local dashboard")
   .version("0.1.0");
 
 program
   .command("list")
-  .description("List all built-in AgentOS agents")
+  .description("List all built-in axiom agents")
   .action(() => {
     listAgents();
   });
 
 program
   .command("agents")
-  .description("List saved custom agents in .agentos/agents")
+  .description("List saved custom agents in .axiom/agents")
   .action(async () => {
     await listCustomAgents();
   });
@@ -46,7 +46,7 @@ program
 
 program
   .command("dashboard")
-  .description("Launch the local AgentOS dashboard")
+  .description("Launch the local axiom dashboard")
   .option("-p, --port <port>", "Port for the local dashboard", "3210")
   .action(async (options: { port: string }) => {
     await openDashboard(Number(options.port));
@@ -54,14 +54,14 @@ program
 
 program
   .command("init [name]")
-  .description("Initialize a new local-first AgentOS project")
+  .description("Initialize a new local-first axiom project")
   .action(async (name?: string) => {
     await initProject(name);
   });
 
 if (process.argv.length <= 2) {
   console.log();
-  console.log(chalk.bold.cyan("  AgentOS") + chalk.gray(" - Local-first AI agents for product teams"));
+  console.log(chalk.bold.cyan("  axiom") + chalk.gray(" - Local-first AI agents for product teams"));
   console.log();
   program.outputHelp();
   console.log();

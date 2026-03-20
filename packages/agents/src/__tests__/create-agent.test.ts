@@ -24,7 +24,7 @@ describe("createAgent", () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     process.env.CLAUDE_CODE_OAUTH_TOKEN = "test-oauth-token";
-    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "agentos-builder-"));
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "axiom-builder-"));
     configure({
       storageDir: tempDir,
       persistRuns: false,

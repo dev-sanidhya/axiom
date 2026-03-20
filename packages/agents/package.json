@@ -1,7 +1,7 @@
 {
-  "name": "@agentos/agents",
+  "name": "@axiom/agents",
   "version": "0.1.0",
-  "description": "Importable AI agents, custom agent builder, and local project persistence for AgentOS.",
+  "description": "Importable AI agents, custom agent builder, and local project persistence for axiom.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -21,18 +21,18 @@
     "anthropic",
     "llm",
     "ai-agents",
-    "agentos",
+    "axiom",
     "shadcn",
     "pre-built",
     "no-code"
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dev-sanidhya/AgentOS"
+    "url": "https://github.com/dev-sanidhya/axiom"
   },
-  "homepage": "https://github.com/dev-sanidhya/AgentOS#readme",
+  "homepage": "https://github.com/dev-sanidhya/axiom#readme",
   "bugs": {
-    "url": "https://github.com/dev-sanidhya/AgentOS/issues"
+    "url": "https://github.com/dev-sanidhya/axiom/issues"
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "^0.2.80",

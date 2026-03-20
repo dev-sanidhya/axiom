@@ -1,13 +1,13 @@
-# AgentOS v0.1 Plan
+# axiom v0.1 Plan
 
 ## Product Definition
 
-AgentOS is a local-first product for developers and teams who want working AI agents in code without building an agent stack from scratch.
+axiom is a local-first product for developers and teams who want working AI agents in code without building an agent stack from scratch.
 
 Current v0.1 shape:
 - 20 importable built-in agents
 - custom agents generated from one plain-English description
-- project-local persistence under `.agentos/`
+- project-local persistence under `.axiom/`
 - CLI for creation, execution, and setup
 - local dashboard for catalog + observability
 
@@ -43,7 +43,7 @@ Current v0.1 shape:
 
 ## Product Thesis
 
-AgentOS is not an agent framework and not a Claude replacement.
+axiom is not an agent framework and not a Claude replacement.
 
 It is:
 - a library of ready-made agents
@@ -60,7 +60,7 @@ Near-term:
 - broaden adoption through ready-made agents and builder UX
 
 Next layer:
-- AgentOS proxy
+- axiom proxy
 - hosted traces and dashboards
 - usage billing and caching
 - team management
@@ -69,7 +69,7 @@ Next layer:
 
 Still not implemented:
 - hosted SaaS dashboard
-- AgentOS proxy and billing
+- axiom proxy and billing
 - team auth / multi-user backend
 - marketplace and sharing layer
 - semantic caching

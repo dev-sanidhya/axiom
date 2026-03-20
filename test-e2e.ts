@@ -27,7 +27,7 @@ async function test(name: string, fn: () => Promise<void>) {
 }
 
 async function main() {
-  console.log('=== AgentOS E2E Tests ===');
+  console.log('=== axiom E2E Tests ===');
   console.log(`OAuth token: ${process.env.CLAUDE_CODE_OAUTH_TOKEN ? 'SET' : 'MISSING'}`);
   console.log(`API key: ${process.env.ANTHROPIC_API_KEY ? 'SET' : 'MISSING'}`);
 
@@ -98,7 +98,7 @@ async function main() {
     );
     console.log();
     console.log(`  Agent created: ${agent.description}`);
-    const result = await agent.run('AgentOS');
+    const result = await agent.run('axiom');
     console.log(`  Success: ${result.success}`);
     console.log(`  Output preview: ${result.output.slice(0, 200)}...`);
     if (!result.success) throw new Error(result.error || 'Failed');
@@ -113,7 +113,7 @@ async function main() {
       tools: [],
     });
     const result = await agent.run(
-      'AgentOS is a library of pre-built AI agents that anyone can import and use. ' +
+      'axiom is a library of pre-built AI agents that anyone can import and use. ' +
       'It wraps the Anthropic Claude SDK and provides 8 agents out of the box. ' +
       'Users authenticate via OAuth tokens from their Claude Max plan.'
     );

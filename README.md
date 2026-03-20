@@ -1,18 +1,18 @@
-# AgentOS
+# axiom
 
-AgentOS is a local-first library of importable AI agents with a description-first custom agent builder and a local dashboard for run history.
+axiom is a local-first library of importable AI agents with a description-first custom agent builder and a local dashboard for run history.
 
 The current product shape in this repo is:
-- `@agentos/agents`: 20 built-in agents, custom agent builder, saved custom agents, persisted run records
-- `@agentos/cli`: list, try, create, init, saved-agent listing, dashboard launch
-- `@agentos/dashboard`: local web dashboard for agent catalog and run observability
+- `@axiom/agents`: 20 built-in agents, custom agent builder, saved custom agents, persisted run records
+- `@axiom/cli`: list, try, create, init, saved-agent listing, dashboard launch
+- `@axiom/dashboard`: local web dashboard for agent catalog and run observability
 
 ## Positioning
 
-AgentOS is for developers and small teams embedding agent capabilities into products and workflows. It is not trying to replace Claude chat. The value is:
+axiom is for developers and small teams embedding agent capabilities into products and workflows. It is not trying to replace Claude chat. The value is:
 - ready-made agents you can import and run
 - reusable custom agents from one plain-English description
-- local project persistence under `.agentos/`
+- local project persistence under `.axiom/`
 - visibility into runs, tools, tokens, loops, duration, cost, and auth mode
 
 ## Auth
@@ -35,7 +35,7 @@ Fallback:
 ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-AgentOS prefers `CLAUDE_CODE_OAUTH_TOKEN` and falls back to API-key auth when needed.
+axiom prefers `CLAUDE_CODE_OAUTH_TOKEN` and falls back to API-key auth when needed.
 
 ## Local Setup
 
@@ -64,7 +64,7 @@ import {
   PRDWriter,
   createAgent,
   loadAgent,
-} from "@agentos/agents";
+} from "@axiom/agents";
 
 configure({
   oauthToken: process.env.CLAUDE_CODE_OAUTH_TOKEN,
@@ -123,7 +123,7 @@ console.log(result.output);
 The builder is description-first.
 
 ```ts
-import { createAgent, saveAgent } from "@agentos/agents";
+import { createAgent, saveAgent } from "@axiom/agents";
 
 const agent = await createAgent(
   "An agent that reads customer interview notes and extracts themes, objections, and feature requests."
@@ -145,15 +145,15 @@ Generated custom agents include:
 Saved custom agents live in:
 
 ```text
-.agentos/agents/<slug>.json
+.axiom/agents/<slug>.json
 ```
 
 ## Local Persistence
 
-AgentOS stores project-local artifacts under:
+axiom stores project-local artifacts under:
 
 ```text
-.agentos/
+.axiom/
   agents/
   runs/
 ```
@@ -188,12 +188,12 @@ Dashboard v1 includes:
 ## CLI
 
 ```bash
-agentos list
-agentos agents
-agentos try research-agent "Compare Cursor and Windsurf for a CTO eval."
-agentos create
-agentos dashboard
-agentos init my-agentos-project
+axiom list
+axiom agents
+axiom try research-agent "Compare Cursor and Windsurf for a CTO eval."
+axiom create
+axiom dashboard
+axiom init my-axiom-project
 ```
 
 From this repo before publish, use:
@@ -224,16 +224,16 @@ Storage helpers:
 
 ## Market Context
 
-AgentOS is closest to the space around:
+axiom is closest to the space around:
 - agent frameworks such as Mastra, Vercel AI SDK agents, OpenAI Agents, and deepagents
 - tool infrastructure such as Composio
 
-The difference is that AgentOS ships ready-to-use importable agents and a custom builder on top, rather than only giving you primitives.
+The difference is that axiom ships ready-to-use importable agents and a custom builder on top, rather than only giving you primitives.
 
 ## Next Layer
 
-The next commercial layer is still the AgentOS proxy:
-- one AgentOS key
+The next commercial layer is still the axiom proxy:
+- one axiom key
 - hosted traces and billing
 - caching and cost controls
 - team-level observability

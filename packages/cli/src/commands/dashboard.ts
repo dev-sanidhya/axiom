@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { startDashboardServer } from "@agentos/dashboard";
+import { startDashboardServer } from "@axiom/dashboard";
 import { configureRuntime } from "../support";
 
 export async function openDashboard(port = 3210): Promise<void> {

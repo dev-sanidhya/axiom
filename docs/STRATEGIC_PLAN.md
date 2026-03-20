@@ -1,18 +1,18 @@
-# AgentOS Strategic Plan
+# axiom Strategic Plan
 
 ## Core Thesis
 
-AgentOS should be the easiest way for product teams to ship agent capabilities:
+axiom should be the easiest way for product teams to ship agent capabilities:
 - import a built-in agent
 - generate a custom agent from one description
 - persist the result in-project
 - inspect runs locally
 
-The target buyer is a developer or small team shipping product features, not a consumer choosing between AgentOS and Claude chat.
+The target buyer is a developer or small team shipping product features, not a consumer choosing between axiom and Claude chat.
 
 ## Why This Direction
 
-The strongest part of AgentOS is not a custom runtime. It is:
+The strongest part of axiom is not a custom runtime. It is:
 - curated built-in agents
 - reusable custom agents
 - good defaults around tools and prompts
@@ -22,7 +22,7 @@ This creates a different category from:
 - frameworks such as Mastra, Vercel AI SDK, OpenAI Agents, and deepagents
 - tool infrastructure such as Composio
 
-Those tools help developers build agents. AgentOS ships working agents plus a builder on top.
+Those tools help developers build agents. axiom ships working agents plus a builder on top.
 
 ## v0.1 Product Surface
 
@@ -30,7 +30,7 @@ Those tools help developers build agents. AgentOS ships working agents plus a bu
 - 20 built-in agents
 - custom builder from plain English
 - save/load/list for custom agent definitions
-- run persistence under `.agentos/runs`
+- run persistence under `.axiom/runs`
 
 ### CLI
 - list built-in agents
@@ -66,7 +66,7 @@ This keeps setup lightweight and matches the current product direction. API key 
 - adoption through simplicity and breadth
 
 ### Next
-- AgentOS proxy
+- axiom proxy
 - hosted observability
 - credits/usage billing
 - shared team agents
@@ -76,7 +76,7 @@ The important strategic split is:
 - **current runtime**: Claude-token powered local-first product
 - **future monetization**: hosted proxy and team platform
 
-## What Makes AgentOS Defensible
+## What Makes axiom Defensible
 
 Potential moat comes from:
 - curated prompts and agent packaging

@@ -10,7 +10,7 @@ export async function initProject(name?: string): Promise<void> {
         type: "input",
         name: "projectName",
         message: "Project name:",
-        default: "my-agentos-project",
+        default: "my-axiom-project",
       },
     ]);
     name = answer.projectName;
@@ -26,8 +26,8 @@ export async function initProject(name?: string): Promise<void> {
   console.log(chalk.cyan(`  Creating ${name}...`));
 
   fs.mkdirSync(projectDir, { recursive: true });
-  fs.mkdirSync(path.join(projectDir, ".agentos", "agents"), { recursive: true });
-  fs.mkdirSync(path.join(projectDir, ".agentos", "runs"), { recursive: true });
+  fs.mkdirSync(path.join(projectDir, ".axiom", "agents"), { recursive: true });
+  fs.mkdirSync(path.join(projectDir, ".axiom", "runs"), { recursive: true });
 
   const pkg = {
     name,
@@ -35,10 +35,10 @@ export async function initProject(name?: string): Promise<void> {
     private: true,
     scripts: {
       start: "ts-node index.ts",
-      dashboard: "agentos dashboard",
+      dashboard: "axiom dashboard",
     },
     dependencies: {
-      "@agentos/agents": "^0.1.0",
+      "@axiom/agents": "^0.1.0",
       "dotenv": "^16.6.1",
     },
     devDependencies: {
@@ -85,7 +85,7 @@ export async function initProject(name?: string): Promise<void> {
 
   fs.writeFileSync(
     path.join(projectDir, ".gitignore"),
-    ["node_modules/", "dist/", ".env", ".agentos/runs/"].join("\n")
+    ["node_modules/", "dist/", ".env", ".axiom/runs/"].join("\n")
   );
 
   const example = `import "dotenv/config";
@@ -95,7 +95,7 @@ import {
   createAgent,
   loadAgent,
   configure,
-} from "@agentos/agents";
+} from "@axiom/agents";
 
 configure({
   oauthToken: process.env.CLAUDE_CODE_OAUTH_TOKEN,
@@ -129,6 +129,6 @@ main().catch(console.error);
   console.log(chalk.gray("    claude setup-token"));
   console.log(chalk.gray("    # add CLAUDE_CODE_OAUTH_TOKEN to .env"));
   console.log(chalk.gray("    npx ts-node index.ts"));
-  console.log(chalk.gray("    agentos dashboard"));
+  console.log(chalk.gray("    axiom dashboard"));
   console.log();
 }

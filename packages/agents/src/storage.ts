@@ -7,7 +7,7 @@ const AGENTS_DIRNAME = "agents";
 const RUNS_DIRNAME = "runs";
 
 function getStorageRoot(baseDir?: string): string {
-  return baseDir ?? getConfig().storageDir ?? path.join(process.cwd(), ".agentos");
+  return baseDir ?? getConfig().storageDir ?? path.join(process.cwd(), ".axiom");
 }
 
 export function slugify(value: string): string {

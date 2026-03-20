@@ -9,7 +9,7 @@ import {
   listRunRecords,
   listSavedAgentDefinitions,
   loadAgent,
-} from "@agentos/agents";
+} from "@axiom/agents";
 
 export interface DashboardOptions {
   projectDir?: string;
@@ -60,7 +60,7 @@ function dashboardPage(projectName: string): string {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AgentOS Dashboard</title>
+    <title>axiom Dashboard</title>
     <style>
       :root {
         --bg: #f5efe4;
@@ -252,7 +252,7 @@ function dashboardPage(projectName: string): string {
       <div class="hero">
         <div>
           <div class="badge">Project: ${projectName}</div>
-          <h1>AgentOS Dashboard</h1>
+          <h1>axiom Dashboard</h1>
           <p>Catalog your built-in and custom agents, inspect local run history, and trigger runs without leaving the project.</p>
         </div>
       </div>
@@ -260,7 +260,7 @@ function dashboardPage(projectName: string): string {
         <section class="panel">
           <div class="panel-header">
             <h2>Agent Catalog</h2>
-            <p>Prebuilt agents and saved custom agents from <code>.agentos/agents</code>.</p>
+            <p>Prebuilt agents and saved custom agents from <code>.axiom/agents</code>.</p>
           </div>
           <div class="panel-body">
             <div class="filters">
@@ -294,7 +294,7 @@ function dashboardPage(projectName: string): string {
         <section class="panel">
           <div class="panel-header">
             <h2>Run History</h2>
-            <p>Runs from <code>.agentos/runs</code>, with filters and deep inspection.</p>
+            <p>Runs from <code>.axiom/runs</code>, with filters and deep inspection.</p>
           </div>
           <div class="panel-body">
             <div class="filters">
@@ -548,20 +548,20 @@ async function handleApiRequest(
 
   if (req.method === "GET" && url.pathname === "/api/agents") {
     const builtIn = getBuiltInAgents();
-    const custom = await listSavedAgentDefinitions(path.join(options.projectDir, ".agentos"));
+    const custom = await listSavedAgentDefinitions(path.join(options.projectDir, ".axiom"));
     json(res, { builtIn, custom });
     return true;
   }
 
   if (req.method === "GET" && url.pathname === "/api/runs") {
-    const items = await listRunRecords(path.join(options.projectDir, ".agentos"));
+    const items = await listRunRecords(path.join(options.projectDir, ".axiom"));
     json(res, { items });
     return true;
   }
 
   if (req.method === "GET" && url.pathname.startsWith("/api/runs/")) {
     const runId = url.pathname.split("/").pop() ?? "";
-    const items = await listRunRecords(path.join(options.projectDir, ".agentos"));
+    const items = await listRunRecords(path.join(options.projectDir, ".axiom"));
     const item = items.find((run) => run.id === runId);
     if (!item) {
       json(res, { error: "Run not found" }, 404);
@@ -593,7 +593,7 @@ async function handleApiRequest(
       }
       result = await agent.run(body.input);
     } else {
-      const customAgent = await loadAgent(body.id, path.join(options.projectDir, ".agentos"));
+      const customAgent = await loadAgent(body.id, path.join(options.projectDir, ".axiom"));
       if (!customAgent) {
         json(res, { error: "Custom agent not found" }, 404);
         return true;
@@ -601,7 +601,7 @@ async function handleApiRequest(
       result = await customAgent.run(body.input);
     }
 
-    const runs = await listRunRecords(path.join(options.projectDir, ".agentos"));
+    const runs = await listRunRecords(path.join(options.projectDir, ".axiom"));
     json(res, { result: runs[0] ?? result });
     return true;
   }
@@ -614,7 +614,7 @@ export async function startDashboardServer(
 ): Promise<DashboardServerHandle> {
   const projectDir = options.projectDir ?? process.cwd();
   const port = options.port ?? 3210;
-  const storageDir = path.join(projectDir, ".agentos");
+  const storageDir = path.join(projectDir, ".axiom");
 
   configure({
     storageDir,

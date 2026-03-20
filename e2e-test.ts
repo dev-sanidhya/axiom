@@ -116,7 +116,7 @@ async function testWebSearch() {
 
 // ─── Test 3: Agent class (EmailDrafter — no tools) ───────
 async function testEmailDrafter() {
-  header("Test 3: AgentOS EmailDrafter (no tools, pure text)");
+  header("Test 3: axiom EmailDrafter (no tools, pure text)");
 
   try {
     // Import dynamically to ensure .env is loaded first
@@ -142,7 +142,7 @@ async function testEmailDrafter() {
 
 // ─── Test 4: Agent class with tool use (ResearchAgent) ───
 async function testResearchAgent() {
-  header("Test 4: AgentOS ResearchAgent (WebSearch + WebFetch tools)");
+  header("Test 4: axiom ResearchAgent (WebSearch + WebFetch tools)");
 
   try {
     const { ResearchAgent } = await import("./packages/agents/src/agents/research");
@@ -171,7 +171,7 @@ async function testResearchAgent() {
 
 // ─── Test 5: Agent class with file tools (CodeReviewAgent) ──
 async function testCodeReviewAgent() {
-  header("Test 5: AgentOS CodeReviewAgent (Read + Glob + Grep tools)");
+  header("Test 5: axiom CodeReviewAgent (Read + Glob + Grep tools)");
 
   try {
     const { CodeReviewAgent } = await import("./packages/agents/src/agents/code-review");
@@ -273,7 +273,7 @@ async function testStreaming() {
 // ─── Run all tests ──────────────────────────────────────
 async function main() {
   log(`\n${BOLD}════════════════════════════════════════════════════════`);
-  log(`  AgentOS E2E Tests — Real Claude Agent SDK Calls`);
+  log(`  axiom E2E Tests — Real Claude Agent SDK Calls`);
   log(`════════════════════════════════════════════════════════${RESET}`);
 
   const token = process.env.CLAUDE_CODE_OAUTH_TOKEN;

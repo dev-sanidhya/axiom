@@ -1,3 +1,3 @@
-# @agentos/dashboard
+# @axiom/dashboard
 
-Local dashboard package for AgentOS.
+Local dashboard package for axiom.

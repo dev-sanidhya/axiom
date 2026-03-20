@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { getBuiltInAgents } from "@agentos/agents";
+import { getBuiltInAgents } from "@axiom/agents";
 
 export function listAgents(): void {
   const agents = getBuiltInAgents();
@@ -25,19 +25,19 @@ export function listAgents(): void {
       }`
     );
     console.log(
-      `  ${chalk.gray("Import:")} ${chalk.white(`import { ${agent.name.replace(/\s+/g, "")} } from '@agentos/agents';`)}`
+      `  ${chalk.gray("Import:")} ${chalk.white(`import { ${agent.name.replace(/\s+/g, "")} } from '@axiom/agents';`)}`
     );
     console.log(
-      `  ${chalk.gray("Try:   ")} ${chalk.white(`agentos try ${agent.slug}`)}`
+      `  ${chalk.gray("Try:   ")} ${chalk.white(`axiom try ${agent.slug}`)}`
     );
     console.log();
   }
 
   console.log(
-    `  ${chalk.gray("Saved custom agents:")} ${chalk.white("agentos agents")}`
+    `  ${chalk.gray("Saved custom agents:")} ${chalk.white("axiom agents")}`
   );
   console.log(
-    `  ${chalk.gray("Create a custom agent:")} ${chalk.white("agentos create")}`
+    `  ${chalk.gray("Create a custom agent:")} ${chalk.white("axiom create")}`
   );
   console.log();
 }

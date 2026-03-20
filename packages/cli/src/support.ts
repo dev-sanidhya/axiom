@@ -1,13 +1,13 @@
 import path from "path";
 import chalk from "chalk";
-import { configure } from "@agentos/agents";
+import { configure } from "@axiom/agents";
 
 export function configureRuntime(): boolean {
   const oauthToken = process.env.CLAUDE_CODE_OAUTH_TOKEN;
-  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.AGENTOS_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.AXIOM_API_KEY;
 
   configure({
-    storageDir: path.join(process.cwd(), ".agentos"),
+    storageDir: path.join(process.cwd(), ".axiom"),
     projectName: path.basename(process.cwd()),
     persistRuns: true,
     ...(oauthToken ? { oauthToken } : {}),

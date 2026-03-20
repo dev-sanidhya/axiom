@@ -28,7 +28,7 @@ export class Agent {
       id: metadata?.id ?? "custom-agent",
       slug: metadata?.slug ?? slugify(metadata?.name ?? "custom-agent"),
       name: metadata?.name ?? "Custom Agent",
-      summary: metadata?.summary ?? "Custom AgentOS agent",
+      summary: metadata?.summary ?? "Custom axiom agent",
       description: metadata?.description,
       category: metadata?.category ?? "general",
       tags: metadata?.tags ?? [],

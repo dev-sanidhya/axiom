@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import ora from "ora";
 import inquirer from "inquirer";
-import { createAgent, saveAgent } from "@agentos/agents";
+import { createAgent, saveAgent } from "@axiom/agents";
 import { configureRuntime } from "../support";
 
 export async function createAgentCommand(): Promise<void> {
@@ -12,7 +12,7 @@ export async function createAgentCommand(): Promise<void> {
   console.log();
   console.log(chalk.bold("  Custom Agent Builder"));
   console.log(
-    chalk.gray("  Describe the agent once. AgentOS will generate the config, let you run it, and save it into this project.")
+    chalk.gray("  Describe the agent once. axiom will generate the config, let you run it, and save it into this project.")
   );
   console.log();
 
@@ -101,7 +101,7 @@ export async function createAgentCommand(): Promise<void> {
       {
         type: "confirm",
         name: "saveIt",
-        message: "Save this agent into .agentos/agents?",
+        message: "Save this agent into .axiom/agents?",
         default: true,
       },
     ]);
@@ -114,7 +114,7 @@ export async function createAgentCommand(): Promise<void> {
 
     console.log(chalk.gray("  Use in code:"));
     console.log(
-      chalk.white("    import { createAgent, loadAgent } from '@agentos/agents';")
+      chalk.white("    import { createAgent, loadAgent } from '@axiom/agents';")
     );
     console.log(
       chalk.white(

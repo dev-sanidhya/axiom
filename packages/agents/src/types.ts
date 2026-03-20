@@ -173,10 +173,10 @@ export interface ToolCallRecord {
 }
 
 /**
- * Global configuration for the AgentOS library.
+ * Global configuration for the axiom library.
  */
 export interface GlobalConfig {
-  /** Anthropic API key (or AgentOS proxy key) */
+  /** Anthropic API key (or axiom proxy key) */
   apiKey?: string;
   /** OAuth token from Claude Max/Pro plan (from `claude setup-token`) */
   oauthToken?: string;

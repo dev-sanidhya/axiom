@@ -9,7 +9,7 @@ describe("config", () => {
     process.env = { ...originalEnv };
     delete process.env.CLAUDE_CODE_OAUTH_TOKEN;
     delete process.env.ANTHROPIC_API_KEY;
-    delete process.env.AGENTOS_API_KEY;
+    delete process.env.AXIOM_API_KEY;
     // Reset global config by re-configuring with empty
     configure({});
   });
@@ -54,7 +54,7 @@ describe("config", () => {
       expect(cfg.verbose).toBe(false);
       expect(cfg.maxSpendPerRun).toBe(1.0);
       expect(cfg.persistRuns).toBe(true);
-      expect(cfg.storageDir).toContain(".agentos");
+      expect(cfg.storageDir).toContain(".axiom");
     });
 
     it("should override defaults with configured values", () => {
@@ -81,8 +81,8 @@ describe("config", () => {
       expect(auth.oauthToken).toBe("sk-ant-oat01-config");
     });
 
-    it("should fall back to AGENTOS_API_KEY", () => {
-      process.env.AGENTOS_API_KEY = "aos-key";
+    it("should fall back to AXIOM_API_KEY", () => {
+      process.env.AXIOM_API_KEY = "aos-key";
       const auth = resolveAuth();
       expect(auth.apiKey).toBe("aos-key");
       expect(auth.authMode).toBe("api_key");

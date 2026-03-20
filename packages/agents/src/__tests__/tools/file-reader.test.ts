@@ -7,7 +7,7 @@ describe("fileReaderTool", () => {
   let tmpDir: string;
 
   beforeEach(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "agentos-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "axiom-test-"));
   });
 
   afterEach(() => {
@@ -74,7 +74,7 @@ describe("listFilesTool", () => {
   let tmpDir: string;
 
   beforeEach(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "agentos-list-test-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "axiom-list-test-"));
     fs.writeFileSync(path.join(tmpDir, "app.ts"), "");
     fs.writeFileSync(path.join(tmpDir, "config.json"), "{}");
     fs.mkdirSync(path.join(tmpDir, "src"));
