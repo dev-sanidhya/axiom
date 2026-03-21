@@ -46,3 +46,4 @@ Thumbs.db
 .agent-platform/
 *.agent.db
 .agent-cache/
+.vercel

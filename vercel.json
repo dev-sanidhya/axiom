@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "name": "axiomcm",
+  "outputDirectory": "website",
+  "buildCommand": null,
+  "installCommand": null
+}
