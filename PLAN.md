@@ -65,6 +65,40 @@ Next layer:
 - usage billing and caching
 - team management
 
+## Phase 1 - Employee Model (MCP Tool Access)
+
+### Status: Implemented
+
+Agents are now "employees" - each has a curated set of domain-specific tools via Composio MCP, not just generic Claude Code tools.
+
+### What was built
+- `src/mcp.ts` - Composio MCP helper that creates a Tool Router session and returns the MCP server config for the Claude Agent SDK
+- `mcpToolkits?: string[]` added to `AgentConfig`, `BuiltInAgentDefinition`, and `GlobalConfig` (composioApiKey)
+- `Agent.buildQueryOptions()` now calls Composio to get a live MCP URL and injects it into `mcpServers` + `allowedTools` before each run
+- Graceful degradation: if `COMPOSIO_API_KEY` is not set or Composio is unreachable, agents run normally without MCP tools
+
+### Toolkit assignments
+| Agent | Composio Toolkits |
+|---|---|
+| ResearchAgent | HACKERNEWS, GITHUB |
+| CompetitorAnalyzer | HACKERNEWS, GITHUB |
+| CodeReviewAgent | GITHUB |
+| BugTriager | GITHUB |
+| ReleaseNotesAgent | GITHUB |
+| SEOAuditor | HACKERNEWS |
+
+### Usage
+Set `COMPOSIO_API_KEY` in your environment, or:
+```ts
+configure({ composioApiKey: "your-key" });
+```
+Agents with `mcpToolkits` automatically get Composio tools on each run. No extra code needed.
+
+### Next phases
+- Phase 2: Add more toolkit coverage (YOUTUBE, REDDIT, financial tools)
+- Phase 3: Routing/classification layer inside ResearchAgent (picks sources based on topic)
+- Phase 4: Custom agent builder auto-assigns toolkits from description
+
 ## Current Gaps After v0.1
 
 Still not implemented:
