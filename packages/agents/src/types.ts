@@ -96,6 +96,12 @@ export interface AgentConfig {
    * If not specified, all default Claude Code tools are available.
    */
   allowedTools?: string[];
+  /**
+   * Composio toolkit names to load as MCP tools for this agent.
+   * e.g. ['HACKERNEWS', 'GITHUB']
+   * Requires COMPOSIO_API_KEY to be configured.
+   */
+  mcpToolkits?: string[];
   /** Maximum number of agentic loop iterations (prevents runaway costs) */
   maxLoops?: number;
   /** Maximum tokens per response */
@@ -198,6 +204,8 @@ export interface GlobalConfig {
   persistRuns?: boolean;
   /** Explicit project name for persisted run metadata */
   projectName?: string;
+  /** Composio API key for MCP tool access */
+  composioApiKey?: string;
 }
 
 /**
