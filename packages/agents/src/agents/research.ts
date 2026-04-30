@@ -28,6 +28,7 @@ export const ResearchAgent = createBuiltInAgent({
   category: "research",
   tags: ["research", "analysis", "citations"],
   allowedTools: ["WebSearch", "WebFetch", "Read"],
+  mcpToolkits: ["HACKERNEWS", "GITHUB"],
   outputShape: "Structured report with findings, analysis, and sources",
   instructions: INSTRUCTIONS,
   maxLoops: 15,

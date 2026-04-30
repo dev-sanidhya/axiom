@@ -28,6 +28,7 @@ export const CompetitorAnalyzer = createBuiltInAgent({
   category: "business",
   tags: ["competition", "market", "strategy"],
   allowedTools: ["WebSearch", "WebFetch"],
+  mcpToolkits: ["HACKERNEWS", "GITHUB"],
   outputShape: "Competitive analysis with tables and strategic recommendations",
   instructions: INSTRUCTIONS,
   maxLoops: 20,

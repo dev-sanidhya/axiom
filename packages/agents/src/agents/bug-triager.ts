@@ -29,6 +29,7 @@ export const BugTriager = createBuiltInAgent({
   category: "engineering",
   tags: ["bug", "triage", "engineering"],
   allowedTools: ["Read", "Glob", "Grep"],
+  mcpToolkits: ["GITHUB"],
   outputShape: "Bug triage report with severity and probable fix",
   instructions: INSTRUCTIONS,
   maxLoops: 10,

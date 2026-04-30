@@ -28,6 +28,7 @@ export const CodeReviewAgent = createBuiltInAgent({
   category: "engineering",
   tags: ["code", "review", "engineering"],
   allowedTools: ["Read", "Glob", "Grep"],
+  mcpToolkits: ["GITHUB"],
   outputShape: "Prioritized code review with findings and recommendations",
   instructions: INSTRUCTIONS,
   maxLoops: 10,

@@ -26,6 +26,7 @@ export const SEOAuditor = createBuiltInAgent({
   category: "marketing",
   tags: ["seo", "marketing", "website"],
   allowedTools: ["WebSearch", "WebFetch"],
+  mcpToolkits: ["HACKERNEWS"],
   outputShape: "SEO audit with score and prioritized action plan",
   instructions: INSTRUCTIONS,
   maxLoops: 12,

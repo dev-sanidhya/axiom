@@ -21,6 +21,7 @@ export const ReleaseNotesAgent = createBuiltInAgent({
   category: "product",
   tags: ["release", "changelog", "product"],
   allowedTools: ["Read", "Glob", "Grep"],
+  mcpToolkits: ["GITHUB"],
   outputShape: "Release notes grouped by change type and impact",
   instructions: INSTRUCTIONS,
   maxLoops: 6,

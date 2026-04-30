@@ -10,6 +10,8 @@ export interface BuiltInAgentDefinition {
   category: AgentCategory;
   tags: string[];
   allowedTools: string[];
+  /** Composio toolkit names to load as MCP tools. e.g. ['HACKERNEWS', 'GITHUB'] */
+  mcpToolkits?: string[];
   outputShape?: string;
   instructions: string;
   maxLoops?: number;
@@ -40,6 +42,7 @@ export function createBuiltInAgent(
   const agent = new Agent({
     instructions: definition.instructions,
     allowedTools: definition.allowedTools,
+    mcpToolkits: definition.mcpToolkits,
     maxLoops: definition.maxLoops,
     temperature: definition.temperature,
     metadata: registryEntry,
