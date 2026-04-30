@@ -51,6 +51,8 @@ export {
   slugify,
 } from "./storage";
 
+export { buildComposioMcpServer, buildComposioAllowedTools } from "./mcp";
+
 export type {
   AgentTool,
   AgentConfig,
