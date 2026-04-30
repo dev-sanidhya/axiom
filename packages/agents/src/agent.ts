@@ -75,12 +75,13 @@ export class Agent {
     return prompt;
   }
 
-  private async buildQueryOptions(options: RunOptions) {
+  private async buildQueryOptions(input: string, options: RunOptions) {
     const globalCfg = getConfig();
     const model = this.config.model ?? globalCfg.defaultModel;
     const maxTurns = options.maxLoops ?? this.config.maxLoops ?? globalCfg.maxLoops;
     const maxSpend = globalCfg.maxSpendPerRun;
     const { env, authMode } = this.buildEnv();
+    const auth = resolveAuth();
 
     const queryOptions: Record<string, unknown> = {
       model,
@@ -96,7 +97,12 @@ export class Agent {
     const allowedTools = [...(this.config.allowedTools ?? [])];
 
     if (toolkits.length > 0) {
-      const mcpServer = await buildComposioMcpServer(toolkits, globalCfg.composioApiKey);
+      const mcpServer = await buildComposioMcpServer(
+        toolkits,
+        input,
+        { oauthToken: auth.oauthToken, apiKey: auth.apiKey },
+        globalCfg.composioApiKey
+      );
       if (mcpServer) {
         queryOptions.mcpServers = { composio: mcpServer };
         allowedTools.push(...buildComposioAllowedTools(toolkits));
@@ -186,7 +192,7 @@ export class Agent {
 
     try {
       const prompt = this.buildPrompt(input, options);
-      const { queryOptions } = await this.buildQueryOptions(options);
+      const { queryOptions } = await this.buildQueryOptions(input, options);
       const toolCalls: ToolCallRecord[] = [];
 
       const sdkQuery = query({
@@ -295,7 +301,7 @@ export class Agent {
     };
 
     try {
-      const { queryOptions, authMode: resolvedAuthMode } = await this.buildQueryOptions(options);
+      const { queryOptions, authMode: resolvedAuthMode } = await this.buildQueryOptions(input, options);
       authMode = resolvedAuthMode;
 
       const sdkQuery = query({
