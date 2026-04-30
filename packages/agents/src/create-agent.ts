@@ -34,13 +34,19 @@ Return strict JSON with this shape:
   "category": "engineering|product|research|business|marketing|finance|support|operations|general",
   "tags": ["tag1", "tag2"],
   "allowedTools": ["web_search", "web_scrape", "read_file", "list_files", "grep", "bash"],
+  "mcpToolkits": ["HACKERNEWS", "GITHUB"],
   "outputShape": "Short description of the expected output shape",
   "systemPrompt": "Detailed system instructions for the agent"
 }
 
+Available mcpToolkits (Composio external tools - only include if genuinely needed):
+- HACKERNEWS: tech community news, trending posts, developer discussion
+- GITHUB: code search, repositories, issues, pull requests, release history
+
 Rules:
 - Prefer the fewest tools needed.
 - Use no tools for pure drafting/summarization unless external files/web access is clearly required.
+- Only add mcpToolkits if the agent clearly needs live external data from those sources.
 - Make the system prompt production-ready: role, method, output format, rules, and failure behavior.
 - Tags should be concise and lowercase.
 - Output raw JSON only.`;
@@ -50,6 +56,8 @@ export interface AgentSpec {
   inputs?: string;
   outputs?: string;
   tools?: string[];
+  /** Composio toolkit names e.g. ['HACKERNEWS', 'GITHUB'] */
+  mcpToolkits?: string[];
   additionalInstructions?: string;
   name?: string;
   summary?: string;
@@ -63,6 +71,7 @@ interface BuilderResponse {
   category: AgentCategory;
   tags: string[];
   allowedTools: string[];
+  mcpToolkits?: string[];
   outputShape: string;
   systemPrompt: string;
 }
@@ -227,12 +236,18 @@ function sanitizeBuilderResponse(
       "- Prefer actionable outputs over abstract commentary.",
     ].join("\n");
 
+  const validToolkits = ["HACKERNEWS", "GITHUB"];
+  const mcpToolkits = (builderResponse?.mcpToolkits ?? []).filter((t) =>
+    validToolkits.includes(t)
+  );
+
   return {
     name: inferredName,
     summary: inferredSummary,
     category,
     tags,
     allowedTools,
+    mcpToolkits,
     outputShape,
     systemPrompt,
   };
@@ -318,6 +333,7 @@ function buildDefinitionFromSpec(spec: AgentSpec): SavedAgentDefinition {
     tags: Array.from(new Set((spec.tags ?? [category, slug]).map((tag) => slugify(tag)))),
     kind: "custom",
     allowedTools: mapFriendlyToolsToSdk(friendlyTools),
+    mcpToolkits: spec.mcpToolkits?.length ? spec.mcpToolkits : undefined,
     outputShape: spec.outputs ?? "A well-structured response tailored to the task",
     instructions,
     createdAt: now,
@@ -343,6 +359,7 @@ function definitionToAgent(definition: SavedAgentDefinition): Agent {
   return new Agent({
     instructions: definition.instructions,
     allowedTools: definition.allowedTools,
+    mcpToolkits: definition.mcpToolkits,
     maxLoops: 10,
     maxTokens: 4096,
     temperature: 0.4,
@@ -382,6 +399,7 @@ export async function createAgent(
     tags: builder.tags,
     kind: "custom",
     allowedTools: mapFriendlyToolsToSdk(builder.allowedTools),
+    mcpToolkits: builder.mcpToolkits?.length ? builder.mcpToolkits : undefined,
     outputShape: builder.outputShape,
     instructions: builder.systemPrompt,
     createdAt: now,

@@ -56,6 +56,8 @@ export interface SavedAgentDefinition extends AgentRegistryEntry {
   createdAt: string;
   updatedAt: string;
   source: "generated" | "structured_spec" | "manual";
+  /** Composio toolkit names assigned by the builder or user */
+  mcpToolkits?: string[];
 }
 
 export interface PersistedRunRecord {
