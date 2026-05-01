@@ -94,10 +94,15 @@ configure({ composioApiKey: "your-key" });
 ```
 Agents with `mcpToolkits` automatically get Composio tools on each run. No extra code needed.
 
+### Iteration 2 additions (on top of Phase 1)
+- **Haiku router** - before creating a Composio session, a Haiku call classifies the input and returns only the toolkits that are actually needed for this specific run. Pure text tasks return `[]` and skip Composio entirely.
+- **Session cache** - sessions are cached in-memory by sorted toolkit combination for 25 minutes. Same toolkit combo on repeat runs pays zero extra network calls.
+- **Custom agent toolkits** - `createAgent()` builder prompt now includes `mcpToolkits` in the JSON spec. Claude Sonnet infers which Composio toolkits the agent genuinely needs. `AgentSpec` also accepts `mcpToolkits` for structured creation. Both flow through `SavedAgentDefinition` and into the `Agent` constructor.
+
 ### Next phases
 - Phase 2: Add more toolkit coverage (YOUTUBE, REDDIT, financial tools)
-- Phase 3: Routing/classification layer inside ResearchAgent (picks sources based on topic)
-- Phase 4: Custom agent builder auto-assigns toolkits from description
+- Phase 3: Per-agent routing rules (domain-specific heuristics beyond Haiku)
+- Phase 4: Dashboard shows which toolkits were used per run
 
 ## Current Gaps After v0.1
 
